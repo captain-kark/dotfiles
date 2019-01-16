@@ -17,3 +17,9 @@ export NVM_DIR="$HOME/.nvm"
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 PATH=$PATH:$HOME/.rvm/bin:$HOME/.android/tools:$HOME/Library/Android/sdk/platform-tools:$HOME/code/tf
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/kark/code/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kark/code/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/kark/code/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/kark/code/google-cloud-sdk/completion.bash.inc'; fi
