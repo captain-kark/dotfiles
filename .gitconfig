@@ -37,6 +37,7 @@
         history = !git l --all -s -- # filename
         l = log --pretty=tformat:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
         lg = !git l -n # number of commits
+        lgg = !git l -n 10 # number of commits
         origin = push origin -q
         pull = pull --rebase
         purr = pull --rebase
