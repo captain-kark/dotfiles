@@ -9,7 +9,8 @@ alias cp='cp -i'
 alias dc=docker-compose
 alias emacs=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
-alias kc=kubectl
+alias kub=kubectl
+alias tf=terraform
 alias ll='ls -lAh'
 alias ln='ln -is'
 alias ls='ls -lh'
