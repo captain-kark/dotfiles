@@ -62,6 +62,7 @@
         st = true
 [push]
         default = current
+        followTags = true
 [core]
         editor = /Applications/Emacs.app/Contents/MacOS/bin/emacsclient
         excludesfile = ~/.gitignore.global
