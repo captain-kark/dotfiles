@@ -27,7 +27,7 @@
         ap = apply --check # diff.patch
         br = branch -a --no-merged
         ci = commit
-        cleanup = "!git branch --no-color --merged | grep  -v 'master' | xargs -n 1 git branch -d"
+        cleanup = "!git fetch --all --prune; git branch --no-contains master --no-color --merged | xargs -n 1 git branch -d"
         co = checkout
         cp = cherry-pick
         df = diff
@@ -53,8 +53,8 @@
         st = !"(git status -sb && git diff)"
         sto = status -sb
         standup = !git lg --since yesterday --author `git config user.email`
-        swap = "!git stash; git checkout master; git checkout -b $1; git stash pop;"
-        update = "![ `git st | wc -l` -gt 1 ] && echo "Clean working state required." && exit 1; git co master; git fetch --all --prune; git cleanup; [[ `git remote` != *"upstream"* ]] && git purr origin master && exit 0; git purr upstream master; git origin; git co -;"
+        swap = "!git stash; git checkout -b $1 master; git stash pop;"
+        update = "!git cleanup; git fetch origin master:master; git fetch origin dev:dev"
         upstream = push upstream -q
         use-master = "checkout --ours" # files
         use-branch = "checkout --theirs" # files
