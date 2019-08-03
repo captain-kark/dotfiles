@@ -12,7 +12,9 @@ export NOEXEC_EXCLUDE="compass"
 
 export GOPATH="$HOME/code/go"
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/shims:$PATH"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -67,4 +69,10 @@ else
     else
         start_agent
     fi
+fi
+
+# Emacs tramp fix
+if [[ "$TERM" == "dumb" ]]
+then
+  PS1='$ '
 fi
