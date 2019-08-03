@@ -5,27 +5,22 @@ alias cd..='cd ..'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias ack='ack-grep'
-alias cld='colordiff'
-alias clj='lein repl'
 alias cp='cp -i'
-alias cpr='cp -ir'
+alias dc=docker-compose
 alias emacs='emacs --no-splash'
-alias gitlg="git lg | awk '{print NR,\$0}' | less"
+function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
+alias kub=kubectl
+alias tf=terraform
+alias ll='ls -lAh'
 alias ln='ln -is'
-alias ll='ls -lh --color --group-directories-first'
-alias lr='ls -Rlh --color --group-directories-first | less'
-alias llr='ls -RlAh --color --group-directories-first | less'
-alias minty='archey'
+alias ls='ls -lh'
 alias mkdir='mkdir -pv'
 alias mv='mv -i'
 function nmb { $(npm bin)/$@; }
-alias rm='rm -I --preserve-root'
-alias rmr='rm -rI'
 alias sudo='sudo '
-alias top=htop
-alias tmuxd='tmux new -s default'
-alias tmuxa='tmux attach -t default'
+
+export CLICOLOR=1
+export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
 #  Customize BASH PS1 prompt to show current GIT repository and branch.
 #  by Mike Stewart - http://MediaDoneRight.com
