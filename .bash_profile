@@ -1,13 +1,17 @@
 source ~/.bash_aliases
 source ~/.git-prompt.sh
 source ~/.git-completion.sh
-source /etc/bash_completion.d/password-store
+source ~/.pass.bash-completion
 
 df -h | grep -e Filesystem -e /dev/sda1 -e /dev/sdc1
 
 export EDITOR=emacs
 export NODE_PATH=/usr/sbin/node
 export NOEXEC_EXCLUDE="compass"
+
+export GOPATH="$HOME/code/go"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

@@ -12,5 +12,5 @@
 !.irbrc
 !.jscsrc
 !.npmrc
-!code/sh/
+!.pass.bash-completion
 !.tmux.conf
