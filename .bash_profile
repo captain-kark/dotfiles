@@ -27,6 +27,8 @@ export CLOUDSDK_PYTHON=/usr/bin/python2.7
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/kark/code/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kark/code/google-cloud-sdk/path.bash.inc'; fi
 
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
 shopt -s dotglob
 
 SSH_ENV="$HOME/.ssh/environment"
