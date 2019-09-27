@@ -20,6 +20,18 @@ function nmb { $(npm bin)/$@; }
 alias sudo='sudo '
 alias tmuxd='tmux new-session -A -s default; tmux send-keys -t default:0 "teamocil default" C-j; tmux attach -t default'
 
+function e {
+  if [ -z "$1" ]
+  then
+    TMP="$(mktemp /tmp/stdin-XXX)"
+    cat >$TMP
+    emacs -n $TMP
+    rm $TMP
+  else
+    emacs -n "$@"
+  fi
+}
+
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
