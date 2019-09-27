@@ -19,6 +19,18 @@ alias mv='mv -i'
 function nmb { $(npm bin)/$@; }
 alias sudo='sudo '
 
+function e {
+  if [ -z "$1" ]
+  then
+    TMP="$(mktemp /tmp/stdin-XXX)"
+    cat >$TMP
+    emacsclient -a emacs -n $TMP
+    rm $TMP
+  else
+    emacsclient -a emacs -n "$@"
+  fi
+}
+
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
