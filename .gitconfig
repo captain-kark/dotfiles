@@ -53,7 +53,7 @@
         sto = status -sb
         standup = !git lg --since yesterday --author `git config user.email`
         swap = "!git stash; git checkout -b $1 master; git stash pop;"
-        update = "!git fetch --all --prune; git branch --no-contains `git show-ref -s -- HEAD` --no-color --merged | xargs -n 1 git branch -d"
+        update = "!git fetch --all --prune; git branch --no-contains HEAD --no-color --merged | xargs -n 1 git branch -d"
         upstream = push upstream -q
         use-master = "checkout --ours" # files
         use-branch = "checkout --theirs" # files
