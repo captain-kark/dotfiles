@@ -8,7 +8,10 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
 export NOEXEC_EXCLUDE="compass"
 export SHELL="/usr/local/bin/bash"
 
-export GOPATH=~/code/go
+export GOVERSION="1.13"
+export PATH="$PATH:$HOME/code/goroots/go$GOVERSION/bin:$HOME/code/go/bin"
+export GOROOT_BOOTSTRAP=$(go env GOROOT)
+
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
 
