@@ -7,3 +7,5 @@
 
 # flycheck temporary lint files
 *flycheck_*\.py
+
+.env
