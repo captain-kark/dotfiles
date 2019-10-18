@@ -18,6 +18,7 @@ alias ls='ls -lh'
 alias mkdir='mkdir -pv'
 alias mv='mv -i'
 function nmb { $(npm bin)/$@; }
+alias pbc='fc -ln -1 | awk '\''{$1=$1}1'\'' ORS='\'''\'' | pbcopy'
 alias sudo='sudo '
 alias tmuxd='tmux new-session -A -s default; tmux send-keys -t default:0 "teamocil default" C-j; tmux attach -t default'
 
