@@ -21,6 +21,7 @@ alias mv='mv -i'
 function nmb { $(npm bin)/$@; }
 alias noisy='unset PS1_NO_VERBOSE'
 alias quiet='export PS1_NO_VERBOSE=1'
+alias pbc='fc -ln -1 | awk '\''{$1=$1}1'\'' ORS='\'''\'' | xsel -b'
 alias sudo='sudo '
 # https://brettterpstra.com/2015/02/20/shell-trick-printf-rules/
 rulem ()  {
