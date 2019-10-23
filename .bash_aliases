@@ -11,6 +11,7 @@ alias emacs=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
+function gcp-context { python -c 'from pathlib import Path as P; from configparser import ConfigParser as C; c = C(); c.read(P.home() / ".config/gcloud/configurations/config_default"); print(c.get("core", "project"))'; }
 alias tf=terraform
 alias ll='ls -lAh'
 alias ln='ln -is'
@@ -129,7 +130,15 @@ Jobs="\j"
 # This PS1 snippet was adopted from code for MAC/BSD I saw from: http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
 # I tweaked it to work on UBUNTU 11.04 & 11.10 plus made it mo' better
 
-export PS1='$(echo "'$IBlack$Time24h$Color_Off'") $(command -v kubectl &>/dev/null; \
+export PS1='$(echo "'$IBlack$Time24h$Color_Off'") $(command -v gcloud &>/dev/null; \
+if [ $? -eq 0 ]; then \
+  CONTEXT="$(gcp-context)"; \
+  if [[ "$CONTEXT" =~ "prod" ]]; then \
+     echo -n "'$IRed'$CONTEXT'$Color_Off'"; \
+  else \
+    echo -n "'$BIBlack'$CONTEXT'$Color_Off'"; \
+  fi
+fi) $(command -v kubectl &>/dev/null; \
 if [ $? -eq 0 ]; then \
   CONTEXT="$(kub-context)"; \
   if [[ "$CONTEXT" =~ "prod" ]]; then \
