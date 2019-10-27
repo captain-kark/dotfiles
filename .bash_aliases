@@ -157,7 +157,8 @@ pc() {
 export GIT_PS1_SHOWCOLORHINTS=true
 export PROMPT_COMMAND='__git_ps1 "$(
 if [ -z $PS1_NO_VERBOSE ]; then
-  echo "'$BIBlack######'$(git status -sb | head -n 1) '$BIBlack########$ColorOff'";
+  git branch &>/dev/null;
+  [ $? -eq 0 ] && echo "'$BIBlack######'$(git status -sb | head -n 1) '$BIBlack########$ColorOff'";
 fi
 echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null;
 if [ $? -eq 0 ]; then
@@ -179,7 +180,7 @@ fi)" " $(
 git branch &>/dev/null;
 if [ $? -eq 0 ]; then
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1;
-  if [ "$?" -eq "0" ]; then
+  if [ $? -eq 0 ]; then
     echo "'$BYellow$PathShort$Color_Off'";
     [ -z $PS1_NO_VERBOSE ] && git lg 1 --color;
   else
@@ -189,12 +190,7 @@ if [ $? -eq 0 ]; then
 else
   echo " '$Yellow$PathShort$Color_Off'";
 fi)\n$(
-if [ -n "$?" ]; then
-  echo "'$Yellow'RET=?'$Color_Off'";
-elif [ "$?" -ne 0 ]; then
-  echo "'$Green'RET=\$?'$Color_Off'";
-else
-  echo "'$BIRed'RET=\$?'$Color_Off'";
-fi): "'
+pc;
+echo \\\$?=$Blue\$?$Color_Off): " " $IPurple:$ColorOff"'
 
 trap 'trapDbg' DEBUG
