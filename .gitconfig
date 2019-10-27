@@ -9,12 +9,12 @@
         ui = true
         pager = true
 [color "branch"]
-        current = cyan
-        local = yellow
+        current = yellow
+        local = dim yellow
         remote = magenta
 [color "diff"]
         meta = yellow
-        frag = white dim
+        frag = dim white
         old = red
         new = cyan
         whitespace = white reverse
