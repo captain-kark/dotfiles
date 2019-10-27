@@ -148,12 +148,12 @@ fi)$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
-    # @4 - Clean repository - nothing to commit
-    echo "'$IGreen'"$(__git_ps1 " (%s)"); \
+    echo "'$IGreen$(__git_ps1 " (%s) ")$BYellow$PathShort$Color_Off'"; \
+    git lg 3 --color; \
   else \
-    # @5 - Changes to working tree
-    echo "'$BIRed'"$(__git_ps1 " {%s}"); \
-  fi) '$BYellow$PathShort$Color_Off'"; \
+    echo "'$BIRed$(__git_ps1 " {%s} ")$BYellow$PathShort$Color_Off'"; \
+    git status -s; \
+  fi)"; \
 else \
   # @2 - Prompt when not in GIT repo
   echo " '$Yellow$PathShort$Color_Off'"; \
