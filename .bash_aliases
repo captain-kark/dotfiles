@@ -22,6 +22,15 @@ function nmb { $(npm bin)/$@; }
 alias noisy='unset PS1_NO_VERBOSE'
 alias quiet='export PS1_NO_VERBOSE=1'
 alias sudo='sudo '
+# https://brettterpstra.com/2015/02/20/shell-trick-printf-rules/
+rulem ()  {
+  if [ $# -eq 0 ]; then
+    echo "Usage: rulem MESSAGE [RULE_CHARACTER]"
+    return 1
+  fi
+  # Fill line with ruler character ($2, default "-"), reset cursor, move 2 cols right, print message
+  printf -v _hr "%*s" $(tput cols) && echo -en ${_hr// /${2--}} && echo -e "\r\033[2C$1"
+}
 
 function e {
   if [ -z "$1" ]
@@ -147,7 +156,7 @@ pc() {
 export PROMPT_COMMAND=pc
 trap 'trapDbg' DEBUG
 
-export PS1='$(echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null; \
+export PS1='$([ -z $PS1_NO_VERBOSE ] && echo "'$BIBlack$(rulem "$(git status -sb | head -n 1) " "#")$ColorOff'"; echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null; \
 if [ $? -eq 0 ]; then \
   CONTEXT="$(gcp-context)"; \
   if [[ "$CONTEXT" =~ "prod" ]]; then \
@@ -168,7 +177,7 @@ if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
     echo "'$IGreen$(__git_ps1 " (%s) ")$BYellow$PathShort$Color_Off'"; \
-    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color && git status -sb; \
+    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color; \
   else \
     echo "'$BIRed$(__git_ps1 " {%s} ")$BYellow$PathShort$Color_Off'"; \
     [ -z $PS1_NO_VERBOSE ] && git status -s; \
