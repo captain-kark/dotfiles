@@ -136,48 +136,6 @@ PathFull="\W"
 NewLine="\n"
 Jobs="\j"
 
-ps1pc_start='$(
-if [ -z $PS1_NO_VERBOSE ]; then \
-  echo "'$BIBlack######'$(git status -sb | head -n 1) '$BIBlack########$ColorOff'"; \
-fi
-echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null; \
-if [ $? -eq 0 ]; then \
-  CONTEXT="$(gcp-context)"; \
-  if [[ "$CONTEXT" =~ "prod" ]]; then \
-     echo -n " '$IRed'$CONTEXT'$Color_Off'"; \
-  else \
-    echo -n " '$Cyan'$CONTEXT'$Color_Off'"; \
-  fi
-fi)$(command -v kubectl &>/dev/null; \
-if [ $? -eq 0 ]; then \
-  CONTEXT="$(kub-context)"; \
-  if [[ "$CONTEXT" =~ "prod" ]]; then \
-     echo -n " '$IRed#'$CONTEXT'#$Color_Off'"; \
-  else \
-    echo -n " '$Yellow'[$CONTEXT]'$Color_Off'"; \
-  fi
-fi)'
-
-ps1pc_end='$(git branch &>/dev/null;\
-if [ $? -eq 0 ]; then \
-  echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
-  if [ "$?" -eq "0" ]; then \
-    echo "'$BYellow$PathShort$Color_Off'"; \
-    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color; \
-  else \
-    echo "'$BYellow$PathShort$Color_Off'"; \
-    [ -z $PS1_NO_VERBOSE ] && git status -s; \
-  fi)"; \
-else \
-  echo " '$Yellow$PathShort$Color_Off'"; \
-fi)\n$(if [ -z $_returncode ]; then
-  echo "'$Yellow'\$?=?'$Color_Off'"; \
-elif [ $_returncode -eq 0 ]; then \
-  echo "'$IGreen'\$?=0'$Color_Off'"; \
-else
-  echo "'$BIRed'\$?=$_returncode'$Color_Off'"; \
-fi): '
-
 ##
 # https://stackoverflow.com/a/27452329
 # set the last command's return code in the next PS1
@@ -195,46 +153,48 @@ pc() {
    export _cmd=
    trap 'trapDbg' DEBUG
 }
+
+export GIT_PS1_SHOWCOLORHINTS=true
 export PROMPT_COMMAND='__git_ps1 "$(
-if [ -z $PS1_NO_VERBOSE ]; then \
-  echo "'$BIBlack######'$(git status -sb | head -n 1) '$BIBlack########$ColorOff'"; \
+if [ -z $PS1_NO_VERBOSE ]; then
+  echo "'$BIBlack######'$(git status -sb | head -n 1) '$BIBlack########$ColorOff'";
 fi
-echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null; \
-if [ $? -eq 0 ]; then \
-  CONTEXT="$(gcp-context)"; \
-  if [[ "$CONTEXT" =~ "prod" ]]; then \
-     echo -n " '$IRed'$CONTEXT'$Color_Off'"; \
-  else \
-    echo -n " '$Cyan'$CONTEXT'$Color_Off'"; \
+echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null;
+if [ $? -eq 0 ]; then
+  CONTEXT="$(gcp-context)";
+  if [[ "$CONTEXT" =~ "prod" ]]; then
+     echo -n " '$IRed'$CONTEXT'$Color_Off'";
+  else
+    echo -n " '$Cyan'$CONTEXT'$Color_Off'";
   fi
-fi)$(command -v kubectl &>/dev/null; \
-if [ $? -eq 0 ]; then \
-  CONTEXT="$(kub-context)"; \
-  if [[ "$CONTEXT" =~ "prod" ]]; then \
-     echo -n " '$IRed#'$CONTEXT'#$Color_Off'"; \
-  else \
-    echo -n " '$Yellow'[$CONTEXT]'$Color_Off'"; \
+fi)$(command -v kubectl &>/dev/null;
+if [ $? -eq 0 ]; then
+  CONTEXT="$(kub-context)";
+  if [[ "$CONTEXT" =~ "prod" ]]; then
+     echo -n " '$IRed#'$CONTEXT'#$Color_Off'";
+  else
+    echo -n " '$Yellow'[$CONTEXT]'$Color_Off'";
   fi
-fi)" " $( \
-git branch &>/dev/null; \
-if [ $? -eq 0 ]; then \
-  echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
-  if [ "$?" -eq "0" ]; then \
-    echo "'$BYellow$PathShort$Color_Off'"; \
-    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color; \
-  else \
-    echo "'$BYellow$PathShort$Color_Off'"; \
-    [ -z $PS1_NO_VERBOSE ] && git status -s; \
-  fi)"; \
-else \
-  echo " '$Yellow$PathShort$Color_Off'"; \
-fi)\n$( \
-if [ -z "\$?" ]; then \
-  echo "'$Yellow'RET=$?$Color_Off"; \
-elif [ "$?" -ne 0 ]; then \
-  echo "RET=\$?$Color_Off"; \
+fi)" " $(
+git branch &>/dev/null;
+if [ $? -eq 0 ]; then
+  echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1;
+  if [ "$?" -eq "0" ]; then
+    echo "'$BYellow$PathShort$Color_Off'";
+    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color;
+  else
+    echo "'$BYellow$PathShort$Color_Off'";
+    [ -z $PS1_NO_VERBOSE ] && git status -s;
+  fi)";
 else
-  echo "'$BIRed'RET=\$?$Color_Off"; \
+  echo " '$Yellow$PathShort$Color_Off'";
+fi)\n$(
+if [ -n "$?" ]; then
+  echo "'$Yellow'RET=?'$Color_Off'";
+elif [ "$?" -ne 0 ]; then
+  echo "'$Green'RET=\$?'$Color_Off'";
+else
+  echo "'$BIRed'RET=\$?'$Color_Off'";
 fi): "'
 
 trap 'trapDbg' DEBUG
