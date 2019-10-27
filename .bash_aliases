@@ -168,7 +168,7 @@ if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
     echo "'$IGreen$(__git_ps1 " (%s) ")$BYellow$PathShort$Color_Off'"; \
-    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color; \
+    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color && git status -sb; \
   else \
     echo "'$BIRed$(__git_ps1 " {%s} ")$BYellow$PathShort$Color_Off'"; \
     [ -z $PS1_NO_VERBOSE ] && git status -s; \
