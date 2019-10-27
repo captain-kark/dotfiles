@@ -19,6 +19,8 @@ alias ls='ls -lh'
 alias mkdir='mkdir -pv'
 alias mv='mv -i'
 function nmb { $(npm bin)/$@; }
+alias noisy='unset PS1_NO_VERBOSE'
+alias quiet='export PS1_NO_VERBOSE=1'
 alias sudo='sudo '
 
 function e {
@@ -125,8 +127,25 @@ PathFull="\W"
 NewLine="\n"
 Jobs="\j"
 
-# This PS1 snippet was adopted from code for MAC/BSD I saw from: http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
-# I tweaked it to work on UBUNTU 11.04 & 11.10 plus made it mo' better
+##
+# https://stackoverflow.com/a/27452329
+# set the last command's return code in the next PS1
+trapDbg() {
+   local c="$BASH_COMMAND"
+   if [ "$c" != "pc" ]; then
+     export _cmd="$c"
+   fi
+}
+pc() {
+   local r=$?
+   trap "" DEBUG
+   [[ -n "$_cmd" ]] && _returncode="$r " || _returncode=""
+   export _returncode
+   export _cmd=
+   trap 'trapDbg' DEBUG
+}
+export PROMPT_COMMAND=pc
+trap 'trapDbg' DEBUG
 
 export PS1='$(echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null; \
 if [ $? -eq 0 ]; then \
@@ -149,12 +168,18 @@ if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
     echo "'$IGreen$(__git_ps1 " (%s) ")$BYellow$PathShort$Color_Off'"; \
-    git lg 3 --color; \
+    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color; \
   else \
     echo "'$BIRed$(__git_ps1 " {%s} ")$BYellow$PathShort$Color_Off'"; \
-    git status -s; \
+    [ -z $PS1_NO_VERBOSE ] && git status -s; \
   fi)"; \
 else \
-  # @2 - Prompt when not in GIT repo
   echo " '$Yellow$PathShort$Color_Off'"; \
-fi)\n$: '
+fi)\n$(if [ -z $_returncode ]; then
+  echo "'$Yellow'\$?=?'$Color_Off'"; \
+elif [ $_returncode -eq 0 ]; then \
+  echo "'$IGreen'\$?=0'$Color_Off'"; \
+else
+  echo "'$BIRed'\$?=$_returncode'$Color_Off'"; \
+fi
+): '
