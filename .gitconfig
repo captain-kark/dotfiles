@@ -59,6 +59,8 @@
         use-branch = "checkout --theirs" # files
 [pager]
         st = true
+        df = true
+        dfc = true
 [push]
         default = current
         followTags = true
