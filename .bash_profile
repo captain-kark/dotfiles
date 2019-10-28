@@ -1,5 +1,6 @@
 source ~/.bash_aliases
 source ~/.git-prompt.sh
+export GIT_PS1_SHOWCOLORHINTS=true
 source ~/.git-completion.sh
 source ~/.pass.bash-completion
 source ~/.gcloud.bash-completion

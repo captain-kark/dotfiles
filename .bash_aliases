@@ -154,7 +154,6 @@ pc() {
    trap 'trapDbg' DEBUG
 }
 
-export GIT_PS1_SHOWCOLORHINTS=true
 export PROMPT_COMMAND='__git_ps1 "$(
 if [ -z $PS1_NO_VERBOSE ]; then
   git branch &>/dev/null;
@@ -191,6 +190,6 @@ else
   echo " '$Yellow$PathShort$Color_Off'";
 fi)\n$(
 pc;
-echo \\\$?=$Blue\$?$Color_Off): " " $IPurple:$ColorOff"'
+echo \\\$?=$Blue\$?$Color_Off): " " %s"'
 
 trap 'trapDbg' DEBUG
