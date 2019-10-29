@@ -12,6 +12,7 @@
 !.inputrc
 !.irbrc
 !.jscsrc
+!.kubectl.bash-completion
 !.npmrc
 !.pass.bash-completion
 !.tmux.conf
