@@ -79,3 +79,5 @@
         renameLimit = 9999
 [merge]
         conflictStyle = diff3
+[reset]
+        quiet = true
