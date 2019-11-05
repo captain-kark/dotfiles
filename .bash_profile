@@ -1,6 +1,5 @@
 source ~/.bash_aliases
 source ~/.git-prompt.sh
-export GIT_PS1_SHOWCOLORHINTS=true
 source ~/.git-completion.sh
 source ~/.pass.bash-completion
 source ~/.gcloud.bash-completion
@@ -45,7 +44,6 @@ function start_agent {
     ssh-add
 }
 
-# test for identities
 function test_identities {
     # test whether standard identities have been added to the agent already
     ssh-add -l | grep "The agent has no identities" > /dev/null

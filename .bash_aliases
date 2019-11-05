@@ -8,6 +8,7 @@ alias ....='cd ../../..'
 alias cp='cp -i'
 alias dc=docker-compose
 alias emacs='emacs --no-splash'
+function fdiff { paste -d " " <(git status -s | sed "s/\([^ ]\) /\1\t/" | cut -d $'\t' -f 1 | sed ':a;/.\{10\}/!{s/$/ /;ba}') <(git diff --stat=$((COLUMNS-4)) HEAD | head -n -1); git status -s | grep "??"; }
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
@@ -47,13 +48,6 @@ function e {
 
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
-
-#  Customize BASH PS1 prompt to show current GIT repository and branch.
-#  by Mike Stewart - http://MediaDoneRight.com
-
-#  SETUP CONSTANTS
-#  Bunch-o-predefined colors.  Makes reading code easier than escape sequences.
-#  I don't remember where I found this.  o_O
 
 # Reset
 Color_Off="\[\033[0m\]"       # Text Reset
@@ -137,60 +131,126 @@ PathFull="\W"
 NewLine="\n"
 Jobs="\j"
 
+kub_prompt() {
+    command -v kubectl &>/dev/null
+    if [ $? -eq 0 ]; then
+        CONTEXT=`kub-context`;
+        if [[ "$CONTEXT" =~ "prod" ]]; then
+            echo " ${IRed}k8s:$CONTEXT$Color_Off";
+        else
+            echo " ${Yellow}k8s:$CONTEXT$Color_Off";
+        fi
+    fi
+}
+
+gcp_prompt() {
+    command -v gcloud &>/dev/null
+    if [ $? -eq 0 ]; then
+        CONTEXT=`gcp-context`;
+        if [[ "$CONTEXT" =~ "prod" ]]; then
+            echo " ${IRed}gcp:$CONTEXT$Color_Off";
+        else
+            echo " ${Cyan}gcp:$CONTEXT$Color_Off";
+        fi
+    fi
+}
+
+ret_prompt() {
+    echo "\\\$?=$Blue$_returncode_color$_returncode$Color_Off: "
+}
+
+prompt() {
+    PRE=""
+    FMT=""
+    POST=""
+    inline_status=" "
+
+    $(git branch > /dev/null 2>&1)
+    GIT_DIR=$?
+
+    if [ -z $_returncode ]; then
+        PS1=$LAST_PROMPT
+    else
+        if [ -z $PS1_NO_VERBOSE ]; then
+            # noisy prompt
+            if [ $GIT_DIR -eq 0 ]; then
+                status=$(git status -sb | head -n 1)
+                if [ "$status" != "${status##*.}" ]; then
+                    inline_status="...${status##*.} "
+                fi
+            fi
+
+            PRE+="\n$White$(rulem "" "▁")$Color_Off\n"
+            PRE+="$_returncode_color$(rulem "" "_")$Color_Off\n"
+            PRE+="\n$IBlue$Time24h$Color_Off "
+            FMT+=$Green%s$Color_Off
+            POST+="$inline_status$BIBlack$Color_Off\n"
+            POST+="⏩$(gcp_prompt)$(kub_prompt) $BYellow$PathShort$Color_Off\n"
+
+            if [ $GIT_DIR -eq 0 ]; then
+                $(git status | grep "nothing to commit" > /dev/null 2>&1)
+                if [ $? -eq 0 ]; then
+                    POST+="$(git lg 1 --color)\n"
+                    POST+="      $Color_Off└─‣$(git diff --shortstat HEAD~1 HEAD)\n"
+                else
+                    POST+="$(fdiff)\n"
+                fi
+            fi
+
+            export LAST_PROMPT="$(ret_prompt)"
+            POST+=$LAST_PROMPT
+            PS1="$PRE$(__git_ps1 $FMT)$POST"
+        else
+            # quiet prompt
+            PRE+=$IBlue$Time24h$Color_Off
+            PRE+=$(gcp_prompt)
+            PRE+=$(kub_prompt)
+
+            if [ $GIT_DIR -eq 0 ]; then
+                $(git status | grep "nothing to commit" > /dev/null 2>&1)
+                if [ $? -eq 0 ]; then
+                    FMT+="$Green (%s)$Color_Off"
+                else
+                    FMT+="$IRed {%s}$Color_Off"
+                fi
+            fi
+
+            POST=" $Yellow$PathShort$Color_Off\n"
+            export LAST_PROMPT="$: "
+            POST+=$LAST_PROMPT
+
+            PS1="$PRE$(__git_ps1 "$FMT")$POST"
+        fi
+    fi
+}
+
 ##
 # https://stackoverflow.com/a/27452329
 # set the last command's return code in the next PS1
 trapDbg() {
    local c="$BASH_COMMAND"
-   if [ "$c" != "pc" ]; then
-     export _cmd="$c"
+   if [ "$c" != "pc" ] && [ "$c" != "_pyenv_virtualenv_hook" ]; then
+       export _cmd="$c"
    fi
 }
+
 pc() {
    local r=$?
    trap "" DEBUG
-   [[ -n "$_cmd" ]] && _returncode="$r" || _returncode=""
-   export _returncode
+   if [ -n "$_cmd" ]; then
+       export _returncode="$r"
+   else
+       export _returncode=""
+   fi
+
+   export _returncode_color=$Red
+   if [ "$_returncode" = "0" ]; then
+       export _returncode_color=$Green
+   fi
    export _cmd=
+   prompt
    trap 'trapDbg' DEBUG
 }
 
-export PROMPT_COMMAND='__git_ps1 "$(
-if [ -z $PS1_NO_VERBOSE ]; then
-  git branch &>/dev/null;
-  [ $? -eq 0 ] && echo "'$BIBlack######'$(git status -sb | head -n 1) '$BIBlack########$ColorOff'";
-fi
-echo "'$IBlue$Time24h$Color_Off'")$(command -v kubectl &>/dev/null;
-if [ $? -eq 0 ]; then
-  CONTEXT="$(gcp-context)";
-  if [[ "$CONTEXT" =~ "prod" ]]; then
-     echo -n " '$IRed'$CONTEXT'$Color_Off'";
-  else
-    echo -n " '$Cyan'$CONTEXT'$Color_Off'";
-  fi
-fi)$(command -v kubectl &>/dev/null;
-if [ $? -eq 0 ]; then
-  CONTEXT="$(kub-context)";
-  if [[ "$CONTEXT" =~ "prod" ]]; then
-     echo -n " '$IRed#'$CONTEXT'#$Color_Off'";
-  else
-    echo -n " '$Yellow'[$CONTEXT]'$Color_Off'";
-  fi
-fi)" " $(
-git branch &>/dev/null;
-if [ $? -eq 0 ]; then
-  echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1;
-  if [ $? -eq 0 ]; then
-    echo "'$BYellow$PathShort$Color_Off'";
-    [ -z $PS1_NO_VERBOSE ] && git lg 1 --color;
-  else
-    echo "'$BYellow$PathShort$Color_Off'";
-    [ -z $PS1_NO_VERBOSE ] && git status -s;
-  fi)";
-else
-  echo " '$Yellow$PathShort$Color_Off'";
-fi)\n$(
-pc;
-echo \\\$?=$Blue\$?$Color_Off): " " %s"'
-
+export PROMPT_COMMAND=pc
 trap 'trapDbg' DEBUG

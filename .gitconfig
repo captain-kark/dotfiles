@@ -2,7 +2,7 @@
         name = captain-kark
         email = andrew.yurisich@nbx.com
 [color]
-        diff = auto
+        diff = always
         status = always
         branch = auto
         interactive = auto
@@ -37,7 +37,7 @@
         history = !git l --all -s -- # filename
         l = log --pretty=tformat:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
         lg = !git l -n # number of commits
-        lgg = !git l -n 10 # number of commits
+        lgg = !git l -n 5
         origin = push origin -q
         purr = pull --rebase
         recap = !git diff --stat ${1-HEAD}~1 ${1-HEAD}
