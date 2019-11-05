@@ -39,9 +39,7 @@
         lg = !git l -n # number of commits
         lgg = !git l -n 10 # number of commits
         origin = push origin -q
-        pull = pull --rebase
         purr = pull --rebase
-        read = show
         recap = !git diff --stat ${1-HEAD}~1 ${1-HEAD}
         reverse = "!git show ${1-HEAD^}..${2-HEAD} | git apply --reverse --3way; git reset ."
         rip = commit --amend --no-edit
@@ -49,10 +47,9 @@
         so = !git am -3 --signoff < # diff.patch
         sor = am --resolved
         split = reset HEAD^
-        sq = !"git reset --soft ${1-master}; git add -A; git commit;"
-        st = diff
+        sq = !"git reset --soft ${1}; git add -A; git commit;"
+        st = status -sb
         standup = !git lg --since yesterday --author `git config user.email`
-        swap = "!git stash; git checkout -b $1 master; git stash pop;"
         update = "!git fetch --all --prune; git branch --no-contains HEAD --no-color --merged | xargs -n 1 git branch -d"
         upstream = push upstream -q
         use-master = "checkout --ours" # files
