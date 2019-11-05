@@ -6,7 +6,7 @@ source ~/.pass.bash-completion
 source ~/.gcloud.bash-completion
 source ~/.kubectl.bash-completion
 
-df -h | grep -e Filesystem -e /dev/sda1 -e /dev/sdc1
+df -h | grep -e Filesystem -e "/$"
 
 export EDITOR=emacs
 export NODE_PATH=/usr/sbin/node
@@ -26,7 +26,6 @@ export NVM_DIR="$HOME/.nvm"
 [[ -s "/usr/local/rvm/scripts/rvm" ]] && source "/usr/local/rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 export CLOUDSDK_PYTHON=/usr/bin/python2.7
-# The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/kark/code/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kark/code/google-cloud-sdk/path.bash.inc'; fi
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
