@@ -166,14 +166,14 @@ prompt() {
     inline_status=" "
 
     $(git branch > /dev/null 2>&1)
-    GIT_DIR=$?
+    _is_git_dir=$?
 
     if [ -z $_returncode ]; then
         PS1=$LAST_PROMPT
     else
         if [ -z $PS1_NO_VERBOSE ]; then
             # noisy prompt
-            if [ $GIT_DIR -eq 0 ]; then
+            if [ $_is_git_dir -eq 0 ]; then
                 status=$(git status -sb | head -n 1)
                 if [ "$status" != "${status##*.}" ]; then
                     inline_status="...${status##*.} "
@@ -187,7 +187,7 @@ prompt() {
             POST+="$inline_status$BIBlack$Color_Off\n"
             POST+="⏩$(gcp_prompt)$(kub_prompt) $BYellow$PathShort$Color_Off\n"
 
-            if [ $GIT_DIR -eq 0 ]; then
+            if [ $_is_git_dir -eq 0 ]; then
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
                 if [ $? -eq 0 ]; then
                     POST+="$(git lg 1 --color)\n"
@@ -206,7 +206,7 @@ prompt() {
             PRE+=$(gcp_prompt)
             PRE+=$(kub_prompt)
 
-            if [ $GIT_DIR -eq 0 ]; then
+            if [ $_is_git_dir -eq 0 ]; then
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
                 if [ $? -eq 0 ]; then
                     FMT+="$Green (%s)$Color_Off"
