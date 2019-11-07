@@ -1,3 +1,4 @@
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 source ~/.bash_aliases
 source ~/.git-prompt.sh
 source ~/.git-completion.sh

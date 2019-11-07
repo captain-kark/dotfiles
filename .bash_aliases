@@ -155,6 +155,14 @@ gcp_prompt() {
     fi
 }
 
+function venv_prompt() {
+    venv=''
+    if [ -n "$VIRTUAL_ENV" ]; then
+        venv="${VIRTUAL_ENV##*/}"
+    fi
+    [ -n "$venv" ] && echo " ${Purple}venv:$venv$Color_Off"
+}
+
 ret_prompt() {
     echo "\\\$?=$Blue$_returncode_color$_returncode$Color_Off: "
 }
@@ -185,7 +193,7 @@ prompt() {
             PRE+="\n$IBlue$Time24h$Color_Off "
             FMT+=$Green%s$Color_Off
             POST+="$inline_status$BIBlack$Color_Off\n"
-            POST+="⏩$(gcp_prompt)$(kub_prompt) $BYellow$PathShort$Color_Off\n"
+            POST+="⏩$(gcp_prompt)$(kub_prompt)$(venv_prompt) $BYellow$PathShort$Color_Off\n"
 
             if [ $_is_git_dir -eq 0 ]; then
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
@@ -205,6 +213,7 @@ prompt() {
             PRE+=$IBlue$Time24h$Color_Off
             PRE+=$(gcp_prompt)
             PRE+=$(kub_prompt)
+            PRE+=$(venv_prompt)
 
             if [ $_is_git_dir -eq 0 ]; then
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
