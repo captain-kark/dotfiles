@@ -1,3 +1,5 @@
+#!/bin/bash
+
 _python_argcomplete() {
     local IFS=''
     local prefix=
