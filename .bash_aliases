@@ -1,3 +1,5 @@
+#!/bin/bash
+
 alias less='less -R'
 
 alias ~='cd ~'
