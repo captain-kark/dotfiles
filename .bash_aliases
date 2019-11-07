@@ -8,7 +8,15 @@ alias ....='cd ../../..'
 alias cp='cp -i'
 alias dc=docker-compose
 alias emacs='emacs --no-splash'
-function fdiff { st=$(git status -s); pad=$(echo "$st" | awk '{ print length + 1 }' | sort -n | tail -1); paste -d "|" <(echo "$st" | sed ":a;/.\{$pad\}/!{s/$/ /;ba}") <(git diff --stat=$((COLUMNS-4)) HEAD | head -n -1 | cut -d "|" -f 2); }
+function fdiff {
+  st=$(git status -s)
+  [ -z "$st" ] && return 0
+  pad=$(echo "$st" | awk '{ print length + 1 }' | sort -n | tail -1)
+  paste -d "|" \
+    <(echo "$st" | sed ":a;/.\{$pad\}/!{s/$/ /;ba}") \
+    <(git diff --stat=$((COLUMNS-4)) HEAD | head -n -1 | cut -d "|" -f 2)
+}
+
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
