@@ -8,7 +8,7 @@ alias ....='cd ../../..'
 alias cp='cp -i'
 alias dc=docker-compose
 alias emacs='emacs --no-splash'
-function fdiff { paste -d " " <(git status -s -uno | sed "s/\([^ ]\) /\1\t/" | cut -d $'\t' -f 1 | sed ':a;/.\{10\}/!{s/$/ /;ba}') <(git diff --stat=$((COLUMNS-4)) HEAD | head -n -1); git status -s | grep "??"; }
+function fdiff { paste -d " " <(git status -s -uno | sed "s/\([^ ]\) /\1\t/" | cut -d $'\t' -f 1 | sed ':a;/.\{10\}/!{s/$/ /;ba}') <(git diff --stat=$((COLUMNS-4)) --relative HEAD | head -n -1); git status -s | grep "??"; }
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
@@ -158,7 +158,7 @@ gcp_prompt() {
 function venv_prompt() {
     venv=''
     if [ -n "$VIRTUAL_ENV" ]; then
-        venv="${VIRTUAL_ENV##*/}"
+        venv=$(basename $(dirname ${VIRTUAL_ENV}))
     fi
     [ -n "$venv" ] && echo " ${Purple}venv:$venv$Color_Off"
 }
