@@ -202,7 +202,7 @@ function venv_prompt() {
 }
 
 ret_prompt() {
-    echo "\\\$?=$Blue$_returncode_color$_returncode$Color_Off: "
+    echo "$_returncode_color\\\$?$Color_Off=$_returncode: "
 }
 
 prompt() {
@@ -231,7 +231,7 @@ prompt() {
             PRE+="\n$IBlue$Time24h$Color_Off "
             FMT+=$Green%s$Color_Off
             POST+="$inline_status$BIBlack$Color_Off\n"
-            POST+="⏩$(gcp_prompt)$(kub_prompt)$(venv_prompt) $BYellow$PathShort$Color_Off\n"
+            POST+="$BIPurple⏩$Color_Off$(gcp_prompt)$(kub_prompt)$(venv_prompt) $BYellow$PathShort$Color_Off\n"
 
             if [ $_is_git_dir -eq 0 ]; then
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
@@ -290,9 +290,9 @@ pc() {
        export _returncode=""
    fi
 
-   export _returncode_color=$Red
+   export _returncode_color=$BRed
    if [ "$_returncode" = "0" ]; then
-       export _returncode_color=$Green
+       export _returncode_color=$BIGreen
    fi
    export _cmd=
    prompt
