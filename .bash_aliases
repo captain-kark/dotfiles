@@ -154,7 +154,7 @@ rulem ()  {
     return 1
   fi
   # Fill line with ruler character ($2, default "-"), reset cursor, move 2 cols right, print message
-  printf -v _hr "%*s" $(tput cols) && echo -en ${_hr// /${2--}} && echo -e "\r\033[2C$1"
+  printf -v _hr "%*s" $((COLUMNS-3)) && echo -en ${_hr// /${2--}} && echo -e "\r\033[2C$1"
 }
 
 function e {
@@ -226,8 +226,7 @@ prompt() {
                 fi
             fi
 
-            PRE+="\n$White$(rulem "" "▁")$Color_Off\n"
-            PRE+="$_returncode_color$(rulem "" "_")$Color_Off\n"
+            PRE+="$_returncode_color$(rulem "" "▁")$Color_Off\n"
             PRE+="\n$IBlue$Time24h$Color_Off "
             FMT+=$Green%s$Color_Off
             POST+="$inline_status$BIBlack$Color_Off\n"
@@ -290,9 +289,9 @@ pc() {
        export _returncode=""
    fi
 
-   export _returncode_color=$BRed
+   export _returncode_color=$IRed
    if [ "$_returncode" = "0" ]; then
-       export _returncode_color=$BIGreen
+       export _returncode_color=$IGreen
    fi
    export _cmd=
    prompt
