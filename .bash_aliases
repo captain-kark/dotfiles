@@ -97,26 +97,40 @@ function fdiff {
   st=$(git status -s)
   [ -z "$st" ] && return 0
   tracked=$(git diff --stat=$((COLUMNS-4)) HEAD | head -n -1 | cut -d "|" -f 2)
-  untracked_files=$(git ls-files --others --exclude-standard | xargs wc -l)
+  untracked=$(echo "$st" | grep "??" | cut -d ' ' -f 2)
+  untracked_files=$(echo "$untracked" | grep "[^/]$")
+  untracked_dirs=$(echo "$untracked" | grep "/$")
+  all_untracked=""
   if [ $(echo "$untracked_files" | wc -l) -gt 1 ]; then
-      untracked=$(echo "$untracked_files" | head -n -1 | awk '{print $1}')
+      all_untracked+=$(echo "$untracked_files" | xargs wc -l | head -n -1 | awk '{print $1}')
   else
-      untracked=$(echo "$untracked_files" | awk '{print $1}')
+      all_untracked+=$(echo "$untracked_files" | xargs wc -l | awk '{print $1}')
+  fi
+  if [ $(echo "$untracked_dirs" | wc -l) -gt 1 ]; then
+      for dir in $untracked_dirs; do
+          all_untracked+=" "
+          this_untracked=$(echo $dir | xargs -i find {} -name '*' -type f | \
+                               xargs wc -l | head -n -1 | cut -d "/" -f 1 | \
+                               awk '{arr[$2]+=$1} END {for (i in arr) {print i,arr[i]}}' | \
+                               sort | cut -d ' ' -f 2)
+          all_untracked+=$this_untracked
+      done
+  else
+      all_untracked+=$(echo "$untracked_dirs" | awk '{print $1}')
   fi
   pad_filenames=$(echo "$st" | awk '{ print length + 1 }' | sort -n | tail -1)
-  pad_linecounts_tracked=$(echo "$tracked" | awk '{ print $1 }' | awk '{ print length }' | sort -n | tail -1)
-  pad_linecounts_untracked=$(echo "$untracked" | awk '{ print length }' | sort -n | tail -1)
-  pad_linecounts=$(paste -d '\n' <(echo "$tracked") <(echo "$untracked") | awk '{print $1}' | awk '{print length + 1}' | sort -n | tail -1)
-  untracked_plus=" $Yellow+$Color_Off"
+  pad_linecounts_tracked=$(echo $tracked | awk '{ print $1 }' | awk '{ print length + 1 }' | sort -n | tail -1)
+  pad_linecounts_untracked=$(echo $untracked | awk '{ print length + 1 }' | sort -n | tail -1)
+  pad_linecounts=$(paste -d '\n' <(echo "$pad_linecounts_tracked") <(echo "$pad_linecounts_untracked") | awk '{print $1}' | awk '{print length + 1}' | sort -n | tail -1)
+  untracked_plus=$Yellow+$Color_Off
   [ -z "$untracked" ] && untracked_plus=""
   paste -d "|" \
     <(echo "$st" | sed ":a;/.\{$pad_filenames\}/!{s/$/ /;ba}") \
     <(if [ -n "$tracked" ]; then
-          printf "%${pad_linecounts}s" "$tracked";
-          echo
+          printf "%${pad_linecounts}s %s\n" $tracked
       fi
-      if [ "$untracked" != 0 ]; then
-          printf "%${pad_linecounts}s$untracked_plus\n" $(echo "$untracked" | awk '{ print $1 }')
+      if [ "$all_untracked" != "0" ]; then
+          printf "%${pad_linecounts}s ~\n" $all_untracked
       fi
      )
 }
