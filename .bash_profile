@@ -1,4 +1,10 @@
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+export HISTFILESIZE=10000
+export HISTSIZE=10000
+export HISTCONTROL=ignorespace:erasedups
+shopt -s cmdhist
+shopt -s histappend
+
 source ~/.bash_aliases
 source ~/.git-prompt.sh
 source ~/.git-completion.sh
