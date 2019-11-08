@@ -1,61 +1,4 @@
 #!/bin/bash
-
-alias less='less -R'
-
-alias ~='cd ~'
-alias cd..='cd ..'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias cp='cp -i'
-alias dc=docker-compose
-alias emacs='emacs --no-splash'
-function fdiff {
-  st=$(git status -s)
-  [ -z "$st" ] && return 0
-  pad=$(echo "$st" | awk '{ print length + 1 }' | sort -n | tail -1)
-  paste -d "|" \
-    <(echo "$st" | sed ":a;/.\{$pad\}/!{s/$/ /;ba}") \
-    <(git diff --stat=$((COLUMNS-4)) HEAD | head -n -1 | cut -d "|" -f 2)
-}
-
-function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
-alias kub=kubectl
-function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
-function gcp-context { python -c 'from pathlib import Path as P; from configparser import ConfigParser as C; c = C(); c.read(P.home() / ".config/gcloud/configurations/config_default"); print(c.get("core", "project"))'; }
-alias tf=terraform
-alias ll='ls -lAh'
-alias ln='ln -is'
-alias ls='ls -lh'
-alias mkdir='mkdir -pv'
-alias mv='mv -i'
-function nmb { $(npm bin)/$@; }
-alias noisy='unset PS1_NO_VERBOSE'
-alias quiet='export PS1_NO_VERBOSE=1'
-alias pbc='fc -ln -1 | awk '\''{$1=$1}1'\'' ORS='\'''\'' | xsel -b'
-alias sudo='sudo '
-# https://brettterpstra.com/2015/02/20/shell-trick-printf-rules/
-rulem ()  {
-  if [ $# -eq 0 ]; then
-    echo "Usage: rulem MESSAGE [RULE_CHARACTER]"
-    return 1
-  fi
-  # Fill line with ruler character ($2, default "-"), reset cursor, move 2 cols right, print message
-  printf -v _hr "%*s" $(tput cols) && echo -en ${_hr// /${2--}} && echo -e "\r\033[2C$1"
-}
-
-function e {
-  if [ -z "$1" ]
-  then
-    TMP="$(mktemp /tmp/stdin-XXX)"
-    cat >$TMP
-    emacsclient -a emacs -n $TMP
-    rm $TMP
-  else
-    emacsclient -a emacs -n "$@"
-  fi
-}
-
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
@@ -140,6 +83,78 @@ PathShort="\w"
 PathFull="\W"
 NewLine="\n"
 Jobs="\j"
+
+alias less='less -R'
+
+alias ~='cd ~'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias cp='cp -i'
+alias dc=docker-compose
+alias emacs='emacs --no-splash'
+function fdiff {
+  st=$(git status -s)
+  [ -z "$st" ] && return 0
+  tracked=$(git diff --stat=$((COLUMNS-4)) HEAD | head -n -1 | cut -d "|" -f 2)
+  untracked_files=$(git ls-files --others --exclude-standard | xargs wc -l)
+  if [ $(echo "$untracked_files" | wc -l) -gt 1 ]; then
+      untracked=$(echo "$untracked_files" | head -n -1 | awk '{print $1}')
+  else
+      untracked=$(echo "$untracked_files" | awk '{print $1}')
+  fi
+  pad_filenames=$(echo "$st" | awk '{ print length + 1 }' | sort -n | tail -1)
+  pad_linecounts_tracked=$(echo "$tracked" | awk '{ print $1 }' | awk '{ print length }' | sort -n | tail -1)
+  pad_linecounts_untracked=$(echo "$untracked" | awk '{ print length }' | sort -n | tail -1)
+  pad_linecounts=$(paste -d '\n' <(echo "$tracked") <(echo "$untracked") | awk '{print $1}' | awk '{print length + 1}' | sort -n | tail -1)
+  untracked_plus=" $Yellow+$Color_Off"
+  [ -z "$untracked" ] && untracked_plus=""
+  paste -d "|" \
+    <(echo "$st" | sed ":a;/.\{$pad_filenames\}/!{s/$/ /;ba}") \
+    <(printf "%${pad_linecounts}s" "$tracked"; \
+      if [ "$untracked" != 0 ]; then
+          echo
+          printf "%${pad_linecounts}s$untracked_plus\n" $(echo "$untracked" | awk '{ print $1 }')
+      fi
+     )
+}
+
+function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
+alias kub=kubectl
+function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
+function gcp-context { python -c 'from pathlib import Path as P; from configparser import ConfigParser as C; c = C(); c.read(P.home() / ".config/gcloud/configurations/config_default"); print(c.get("core", "project"))'; }
+alias tf=terraform
+alias ls='ls -lh --color=auto'
+alias ll='ls -lAh'
+alias ln='ln -is'
+alias mkdir='mkdir -pv'
+alias mv='mv -i'
+function nmb { $(npm bin)/$@; }
+alias noisy='unset PS1_NO_VERBOSE'
+alias quiet='export PS1_NO_VERBOSE=1'
+alias pbc='fc -ln -1 | awk '\''{$1=$1}1'\'' ORS='\'''\'' | xsel -b'
+alias sudo='sudo '
+# https://brettterpstra.com/2015/02/20/shell-trick-printf-rules/
+rulem ()  {
+  if [ $# -eq 0 ]; then
+    echo "Usage: rulem MESSAGE [RULE_CHARACTER]"
+    return 1
+  fi
+  # Fill line with ruler character ($2, default "-"), reset cursor, move 2 cols right, print message
+  printf -v _hr "%*s" $(tput cols) && echo -en ${_hr// /${2--}} && echo -e "\r\033[2C$1"
+}
+
+function e {
+  if [ -z "$1" ]
+  then
+    TMP="$(mktemp /tmp/stdin-XXX)"
+    cat >$TMP
+    emacsclient -a emacs -n $TMP
+    rm $TMP
+  else
+    emacsclient -a emacs -n "$@"
+  fi
+}
 
 kub_prompt() {
     command -v kubectl &>/dev/null
