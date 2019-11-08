@@ -111,9 +111,11 @@ function fdiff {
   [ -z "$untracked" ] && untracked_plus=""
   paste -d "|" \
     <(echo "$st" | sed ":a;/.\{$pad_filenames\}/!{s/$/ /;ba}") \
-    <(printf "%${pad_linecounts}s" "$tracked"; \
-      if [ "$untracked" != 0 ]; then
+    <(if [ -n "$tracked" ]; then
+          printf "%${pad_linecounts}s" "$tracked";
           echo
+      fi
+      if [ "$untracked" != 0 ]; then
           printf "%${pad_linecounts}s$untracked_plus\n" $(echo "$untracked" | awk '{ print $1 }')
       fi
      )
