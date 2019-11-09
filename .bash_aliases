@@ -211,15 +211,17 @@ prompt() {
     POST=""
     inline_status=" "
 
-    $(git branch > /dev/null 2>&1)
-    _is_git_dir=$?
+    function _is_git_dir() {
+        $(git branch > /dev/null 2>&1)
+        return $?
+    }
 
     if [ -z $_returncode ]; then
         PS1=$LAST_PROMPT
     else
         if [ -z $PS1_NO_VERBOSE ]; then
             # noisy prompt
-            if [ $_is_git_dir -eq 0 ]; then
+            if _is_git_dir; then
                 status=$(git status -sb | head -n 1)
                 if [ "$status" != "${status##*.}" ]; then
                     inline_status="...${status##*.} "
@@ -227,16 +229,21 @@ prompt() {
             fi
 
             PRE+="$_returncode_color$(rulem "" "▁")$Color_Off\n"
-            PRE+="\n$IBlue$Time24h$Color_Off "
-            FMT+=$Green%s$Color_Off
-            POST+="$inline_status$BIBlack$Color_Off\n"
-            POST+="$BIPurple⏩$Color_Off$(gcp_prompt)$(kub_prompt)$(venv_prompt) $BYellow$PathShort$Color_Off\n"
+            PRE+="$_returncode_color⏩ $IBlue$Time24h$Color_Off\n"
+            PRE+="$IBlue⏩$IPurple pwd:$PathShort$Color_Off\n"
+            context_prompts=$(gcp_prompt)$(kub_prompt)$(venv_prompt)
+            if [ -n "$context_prompts" ]; then
+                PRE+="$IBlue⏩$Color_Off$context_prompts\n"
+            fi
 
-            if [ $_is_git_dir -eq 0 ]; then
+            if _is_git_dir; then
+                PRE+="$IBlue⏩ "
+                FMT+="${Green}git:%s$Color_Off"
+                POST+="$inline_status\n"
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
                 if [ $? -eq 0 ]; then
                     POST+="$(git lg 1 --color)\n"
-                    POST+="      $Color_Off└─‣$(git diff --shortstat HEAD~1 HEAD)\n"
+                    POST+="       $Color_Off└─‣$(git diff --shortstat HEAD~1 HEAD)\n"
                 else
                     POST+="$(fdiff)\n"
                 fi
@@ -252,7 +259,7 @@ prompt() {
             PRE+=$(kub_prompt)
             PRE+=$(venv_prompt)
 
-            if [ $_is_git_dir -eq 0 ]; then
+            if _is_git_dir; then
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
                 if [ $? -eq 0 ]; then
                     FMT+="$Green (%s)$Color_Off"
@@ -291,7 +298,7 @@ pc() {
 
    export _returncode_color=$IRed
    if [ "$_returncode" = "0" ]; then
-       export _returncode_color=$IGreen
+       export _returncode_color=$Green
    fi
    export _cmd=
    prompt
