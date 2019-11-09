@@ -124,7 +124,7 @@ function fdiff {
   paste -d "|" \
     <(echo "$st" | sed ":a;/.\{$pad_filenames\}/!{s/$/ /;ba}") \
     <(if [ -n "$tracked" ]; then
-          printf "%${pad_linecounts}s %s\n" $tracked
+          printf "%${pad_linecounts}s\n" "$tracked"
       fi
       if [ -n "$untracked" ]; then
           printf "%${pad_linecounts}s \033[0;33m+~\033[0m\n" $all_untracked
