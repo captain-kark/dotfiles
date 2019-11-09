@@ -100,10 +100,12 @@ function fdiff {
   untracked_files=$(echo "$untracked" | grep "[^/]$")
   untracked_dirs=$(echo "$untracked" | grep "/$")
   all_untracked=""
-  if [ $(echo "$untracked_files" | wc -l) -gt 1 ]; then
-      all_untracked+=$(echo $untracked_files | xargs wc -l | head -n -1 | awk '{print $1 }')$'\n'
-  else
-      all_untracked+=$(echo $untracked_files | xargs wc -l | awk '{print $1}')$'\n'
+  if [ -n "$untracked_files" ]; then
+      if [ $(echo "$untracked_files" | wc -l) -gt 1 ]; then
+          all_untracked+=$(echo $untracked_files | xargs wc -l | head -n -1 | awk '{print $1 }')$'\n'
+      else
+          all_untracked+=$(echo $untracked_files | xargs wc -l | awk '{print $1}')$'\n'
+      fi
   fi
   if [ $(echo "$untracked_dirs" | wc -l) -gt 0 ]; then
       for dir in $untracked_dirs; do
