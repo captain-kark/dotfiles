@@ -246,8 +246,8 @@ prompt() {
                 POST+="$inline_status\n"
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
                 if [ $? -eq 0 ]; then
-                    POST+="$(git lg 1 --color)\n"
-                    POST+="       $Color_Off -$(git diff --shortstat HEAD~1 HEAD)\n"
+                    POST+="$(git lg 1 --color)\n$ColorOff"
+                    POST+="$(printf "%$(git rev-parse --short HEAD | wc -c)s" " ")-$(git diff --shortstat HEAD~1 HEAD)\n"
                 else
                     POST+="$(fdiff)\n"
                 fi
