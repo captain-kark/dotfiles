@@ -2,19 +2,19 @@
         name = captain-kark
         email = andrew.yurisich@nbx.com
 [color]
-        diff = auto
-        status = auto
+        diff = always
+        status = always
         branch = auto
         interactive = auto
         ui = true
         pager = true
 [color "branch"]
-        current = cyan
-        local = yellow
+        current = yellow
+        local = dim yellow
         remote = magenta
 [color "diff"]
         meta = yellow
-        frag = white dim
+        frag = dim white
         old = red
         new = cyan
         whitespace = white reverse
@@ -22,6 +22,7 @@
         added = cyan
         changed = red
         untracked = yellow
+        remoteBranch = bold red
 [alias]
         aa = add -A
         ap = apply --check # diff.patch
@@ -36,11 +37,9 @@
         history = !git l --all -s -- # filename
         l = log --pretty=tformat:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
         lg = !git l -n # number of commits
-        lgg = !git l -n 10 # number of commits
+        lgg = !git l -n 5
         origin = push origin -q
-        pull = pull --rebase
         purr = pull --rebase
-        read = show
         recap = !git diff --stat ${1-HEAD}~1 ${1-HEAD}
         reverse = "!git show ${1-HEAD^}..${2-HEAD} | git apply --reverse --3way; git reset ."
         rip = commit --amend --no-edit
@@ -48,17 +47,17 @@
         so = !git am -3 --signoff < # diff.patch
         sor = am --resolved
         split = reset HEAD^
-        sq = !"git reset --soft ${1-master}; git add -A; git commit;"
-        st = !"(git status -sb && git diff)"
-        sto = status -sb
+        sq = !"git reset --soft ${1}; git add -A; git commit;"
+        st = status -sb
         standup = !git lg --since yesterday --author `git config user.email`
-        swap = "!git stash; git checkout -b $1 master; git stash pop;"
         update = "!git fetch --all --prune; git branch --no-contains HEAD --no-color --merged | xargs -n 1 git branch -d"
         upstream = push upstream -q
         use-master = "checkout --ours" # files
         use-branch = "checkout --theirs" # files
 [pager]
         st = true
+        df = true
+        dfc = true
 [push]
         default = current
         followTags = true
@@ -77,3 +76,5 @@
         renameLimit = 9999
 [merge]
         conflictStyle = diff3
+[reset]
+        quiet = true
