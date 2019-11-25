@@ -233,21 +233,21 @@ prompt() {
             fi
 
             PRE+="$_returncode_color$(rulem "" "▁")$Color_Off\n"
-            PRE+="$_returncode_color⏩ $IBlue$Time24h$Color_Off\n"
-            PRE+="$IBlue⏩$IPurple pwd:$PathShort$Color_Off\n"
+            PRE+="$_returncode_color> $IBlack$Time24h$Color_Off\n"
+            PRE+="$IBlack>$IPurple pwd:$PathShort$Color_Off\n"
             context_prompts=$(gcp_prompt)$(kub_prompt)$(venv_prompt)
             if [ -n "$context_prompts" ]; then
-                PRE+="$IBlue⏩$Color_Off$context_prompts\n"
+                PRE+="$IBlack>$Color_Off$context_prompts\n"
             fi
 
             if _is_git_dir; then
-                PRE+="$IBlue⏩ "
+                PRE+="$IBlack> "
                 FMT+="${Green}git:%s$Color_Off"
                 POST+="$inline_status\n"
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
                 if [ $? -eq 0 ]; then
                     POST+="$(git lg 1 --color)\n"
-                    POST+="       $Color_Off└─‣$(git diff --shortstat HEAD~1 HEAD)\n"
+                    POST+="       $Color_Off -$(git diff --shortstat HEAD~1 HEAD)\n"
                 else
                     POST+="$(fdiff)\n"
                 fi
@@ -258,7 +258,7 @@ prompt() {
             PS1="$PRE$(__git_ps1 $FMT)$POST"
         else
             # quiet prompt
-            PRE+=$IBlue$Time24h$Color_Off
+            PRE+=$IBlack$Time24h$Color_Off
             PRE+=$(gcp_prompt)
             PRE+=$(kub_prompt)
             PRE+=$(venv_prompt)
