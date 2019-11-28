@@ -229,8 +229,8 @@ prompt() {
             # noisy prompt
             if _is_git_dir; then
                 status=$(git status -sb | head -n 1)
-                if [ "$status" != "${status##*.}" ]; then
-                    inline_status="...${status##*.} "
+                if [ "$status" != "${status##*...}" ]; then
+                    inline_status="...${status##*...} "
                 fi
             fi
 
