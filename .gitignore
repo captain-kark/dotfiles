@@ -16,3 +16,4 @@
 !.teamocil/default.yml
 !.tmux.conf
 !Brewfile
+!gcloud_context.py

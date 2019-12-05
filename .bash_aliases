@@ -140,7 +140,7 @@ function fdiff {
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
-function gcp-context { python ~/gcloud_context.py; }
+function gcp-context { python ~/gcloud_context.py $(cat ~/.config/gcloud/active_config); }
 alias tf=terraform
 alias ll='ls -lAh'
 alias ln='ln -is'
