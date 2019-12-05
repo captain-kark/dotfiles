@@ -48,7 +48,8 @@
         sor = am --resolved
         split = reset HEAD^
         sq = !"git reset --soft ${1}; git add -A; git commit;"
-        st = status -sb
+        st = !"if [ -z $PS1_NO_VERBOSE ]; then cd .; else git status -sb; fi"
+        sto = !git st
         standup = !git lg --since yesterday --author `git config user.email`
         update = "!git fetch --all --prune; git branch --no-contains HEAD --no-color --merged | xargs -n 1 git branch -d"
         upstream = push upstream -q
