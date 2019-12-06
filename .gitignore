@@ -16,3 +16,4 @@
 !.npmrc
 !.pass.bash-completion
 !.tmux.conf
+!gcloud_context.py

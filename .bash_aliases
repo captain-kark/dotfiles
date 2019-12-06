@@ -1,4 +1,5 @@
 #!/bin/bash
+
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
@@ -102,7 +103,7 @@ function fdiff {
   all_untracked=""
   if [ -n "$untracked_files" ]; then
       if [ $(echo "$untracked_files" | wc -l) -gt 1 ]; then
-          all_untracked+=$(echo $untracked_files | xargs wc -l | head -n -1 | awk '{print $1 }')$'\n'
+          all_untracked+=$(echo $untracked_files | xargs wc -l | sed '$d' | awk '{print $1 }')$'\n'
       else
           all_untracked+=$(echo $untracked_files | xargs wc -l | awk '{print $1}')$'\n'
       fi
@@ -110,7 +111,7 @@ function fdiff {
   if [ $(echo "$untracked_dirs" | wc -l) -gt 0 ]; then
       for dir in $untracked_dirs; do
           all_untracked+=$(echo $dir | xargs -i find {} -name '*' -type f | \
-                               xargs wc -l | head -n -1 | cut -d "/" -f 1 | \
+                               xargs wc -l | sed '$d' | cut -d "/" -f 1 | \
                                awk '{arr[$2]+=$1} END {for (i in arr) {print i,arr[i]}}' | \
                                sort | cut -d ' ' -f 2)$'\n'
       done
@@ -119,14 +120,15 @@ function fdiff {
   fi
   pad_filenames=$(echo "$st" | awk '{ print length + 1 }' | sort -n | tail -1)
   wrap_pad=$((pad_filenames-63))
-  tracked=$(git diff --stat=$((COLUMNS-wrap_pad)) HEAD | head -n -1 | cut -d "|" -f 2)
-  pad_linecounts_untracked=$(echo "$all_untracked" | awk '{ print $1 }' | awk '{ print length + 1 }' | sort -n | tail -1)
-  pad_linecounts_tracked=$(echo "$tracked" | awk '{ print $1 }' | awk '{ print length + 1 }' | sort -n | tail -1)
-  pad_linecounts=$(paste -d '\n' <(echo $pad_linecounts_tracked) <(echo $pad_linecounts_untracked) | sort -n | tail -1)
+  tracked=$(git diff --stat=$((COLUMNS-wrap_pad)) HEAD | sed '$d' | cut -d "|" -f 2 | tr -s '[:blank:]')
+  tracked_counts=$(echo "$tracked" | cut -d " " -f 2)
+  pad_linecounts_untracked=$(echo "$all_untracked" | awk '{ print $1 }' | awk '{ print length + 1 }' | sort -r | head -n 1)
+  pad_linecounts_tracked=$(echo "$tracked_counts" | awk '{ print length + 1 }' | sort -r | head -n 1)
+  pad_linecounts=$(paste -d '\n' <(echo $pad_linecounts_tracked) <(echo $pad_linecounts_untracked) | sort -r | head -n 1)
   paste -d "|" \
-    <(echo "$st" | sed ":a;/.\{$pad_filenames\}/!{s/$/ /;ba}") \
+    <(echo "$st" | awk "{printf \"%-${pad_filenames}s\n\", \$0}") \
     <(if [ -n "$tracked" ]; then
-          printf "%${pad_linecounts}s\n" "$tracked"
+          printf "%${pad_linecounts}s %s\n" $tracked
       fi
       if [ -n "$untracked" ]; then
           printf "%${pad_linecounts}s \033[0;33m+~\033[0m\n" $all_untracked
@@ -137,7 +139,7 @@ function fdiff {
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
-function gcp-context { python -c 'from pathlib import Path as P; from configparser import ConfigParser as C; c = C(); c.read(P.home() / ".config/gcloud/configurations/config_default"); print(c.get("core", "project"))'; }
+function gcp-context { python ~/gcloud_context.py $(cat ~/.config/gcloud/active_config); }
 alias tf=terraform
 alias ls='ls -lh --color=auto'
 alias ll='ls -lAh'
@@ -225,27 +227,27 @@ prompt() {
             # noisy prompt
             if _is_git_dir; then
                 status=$(git status -sb | head -n 1)
-                if [ "$status" != "${status##*.}" ]; then
-                    inline_status="...${status##*.} "
+                if [ "$status" != "${status##*...}" ]; then
+                    inline_status="...${status##*...} "
                 fi
             fi
 
             PRE+="$_returncode_color$(rulem "" "▁")$Color_Off\n"
-            PRE+="$_returncode_color⏩ $IBlue$Time24h$Color_Off\n"
-            PRE+="$IBlue⏩$IPurple pwd:$PathShort$Color_Off\n"
+            PRE+="$_returncode_color> $IBlue$Time24h$Color_Off\n"
+            PRE+="$IBlue>$IPurple pwd:$PathShort$Color_Off\n"
             context_prompts=$(gcp_prompt)$(kub_prompt)$(venv_prompt)
             if [ -n "$context_prompts" ]; then
-                PRE+="$IBlue⏩$Color_Off$context_prompts\n"
+                PRE+="$IBlue>$Color_Off$context_prompts\n"
             fi
 
             if _is_git_dir; then
-                PRE+="$IBlue⏩ "
+                PRE+="$IBlue> "
                 FMT+="${Green}git:%s$Color_Off"
                 POST+="$inline_status\n"
                 $(git status | grep "nothing to commit" > /dev/null 2>&1)
                 if [ $? -eq 0 ]; then
-                    POST+="$(git lg 1 --color)\n"
-                    POST+="       $Color_Off└─‣$(git diff --shortstat HEAD~1 HEAD)\n"
+                    POST+="$(git lg 1 --color)\n$ColorOff"
+                    POST+="$(printf "%$(git rev-parse --short HEAD | wc -c)s" " ")-$(git diff --shortstat HEAD~1 HEAD)\n"
                 else
                     POST+="$(fdiff)\n"
                 fi
