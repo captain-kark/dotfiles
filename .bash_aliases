@@ -138,6 +138,51 @@ function fdiff {
 
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
+function kubn {
+  # kvaps/kubectl-use/blob/b967f15204b357b71d9792c16d664bb26de57e68/kubectl-use
+  _k8s_current_context=$(kub config get-contexts $(kub config current-context) --no-headers)
+
+  if [ "$1" = "-" ]; then
+      kub config use "$_k8s_prev_context" > /dev/null
+      kub config set-context --current --namespace="$_k8s_prev_namespace" > /dev/null
+  fi
+
+  export _k8s_prev_context="$(echo "$_k8s_current_context" | awk '{ printf $2 }')"
+  export _k8s_prev_namespace="$(echo "$_k8s_current_context" | awk '{ printf $5 }')"
+
+  if [ "$1" = "-" ]; then
+      return 0
+  fi
+
+  for context in $(kub config get-contexts -o name); do
+    if [ "$1" = "$context" ]; then
+      _k8s_new_context="$1"
+      break
+    fi
+  done
+  context=
+
+  if [ -n "$_k8s_new_context" ]; then
+    kub config use "$1"
+    if [ -n "$2" ]; then
+      _k8s_new_namespace="$2"
+    fi
+  else
+    if [ -n "$2" ]; then
+      echo "Can not switch context \"$1\"."
+      return 1
+    fi
+    _k8s_new_namespace="$1"
+  fi
+
+  if [ -n "$_k8s_new_namespace" ]; then
+    kub config set-context --current --namespace="$_k8s_new_namespace" > /dev/null
+  fi
+
+  _k8s_new_context=
+  _k8s_new_namespace=
+}
+
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
 function gcp-context { python ~/gcloud_context.py $(cat ~/.config/gcloud/active_config); }
 alias tf=terraform
