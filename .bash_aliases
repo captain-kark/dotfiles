@@ -150,6 +150,7 @@ function kubn {
 
   export _k8s_prev_context="$(echo "$_k8s_current_context" | awk '{ printf $2 }')"
   export _k8s_prev_namespace="$(echo "$_k8s_current_context" | awk '{ printf $5 }')"
+  _k8s_current_context=
 
   if [ "$1" = "-" ]; then
       return 0
@@ -186,6 +187,22 @@ function kubn {
 
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
 function gcp-context { python ~/gcloud_context.py $(cat ~/.config/gcloud/active_config); }
+function gcloudn {
+  if [ "$1" = "-" ]; then
+      _suppressed=$(gcloud config configurations activate "$_gcloud_prev_context" 2>&1 > /dev/null)
+      _suppressed=
+  fi
+
+  export _gcloud_prev_context="$(cat ~/.config/gcloud/active_config)"
+
+  if [ "$1" = "-" ]; then
+      return 0
+  fi
+
+  _suppressed=$(gcloud config configurations activate "$1" 2>&1 > /dev/null)
+  _suppressed=
+}
+
 alias tf=terraform
 alias ll='ls -lAh'
 alias ln='ln -is'
