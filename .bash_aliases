@@ -188,16 +188,19 @@ function kubn {
 function kub-context { kub config get-contexts $(kub config current-context) --no-headers | awk '{printf $2; if ($5) printf ".%s",$5}'; }
 function gcp-context { python ~/gcloud_context.py $(cat ~/.config/gcloud/active_config); }
 function gcloudn {
+  export _gcloud_current_context="$(cat ~/.config/gcloud/active_config)"
+
   if [ "$1" = "-" ]; then
       _suppressed=$(gcloud config configurations activate "$_gcloud_prev_context" 2>&1 > /dev/null)
       _suppressed=
   fi
 
-  export _gcloud_prev_context="$(cat ~/.config/gcloud/active_config)"
-
   if [ "$1" = "-" ]; then
+      export _gcloud_prev_context=$_gcloud_current_context
       return 0
   fi
+
+  export _gcloud_prev_context="$(cat ~/.config/gcloud/active_config)"
 
   _suppressed=$(gcloud config configurations activate "$1" 2>&1 > /dev/null)
   _suppressed=
