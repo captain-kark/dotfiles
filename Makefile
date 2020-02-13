@@ -65,24 +65,37 @@ install-dev:
 		autotools-dev \
 		bsdmainutils \
 		build-essential \
+		curl \
 		emacs \
 		htop \
 		kubectl \
 		lib32readline-dev \
 		lib32readline7 \
+		libbz2-dev \
 		libcurl \
 		libevent-dev \
+		libffi-dev \
+		liblzma-dev \
+		libncurses5-dev \
+		libncursesw5-dev \
 		libsodium-dev \
+		libsqlite3-dev \
 		libssl-dev \
 		libtool \
+		llvm \
 		openssl \
 		pass \
 		pkg-config \
 		protobuf-compiler \
+		python-openssl \
 		python3-pip \
 		silversearcher-ag \
+		tk-dev \
 		tmux \
+		wget \
 		xclip \
+		xz-utils \
+		zlib1g-dev \
 		xsel
 
 	sudo pip3 install virtualenv
