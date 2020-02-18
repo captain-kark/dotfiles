@@ -85,6 +85,8 @@ PathFull="\W"
 NewLine="\n"
 Jobs="\j"
 
+bind '"\C-l": "clear\n"'
+
 alias less='less -R'
 
 alias ~='cd ~'
