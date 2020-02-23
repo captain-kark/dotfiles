@@ -15,5 +15,7 @@
 !.jscsrc
 !.teamocil/default.yml
 !.tmux.conf
+!.tmux.setup
 !Brewfile
+!fdiff.py
 !gcloud_context.py
