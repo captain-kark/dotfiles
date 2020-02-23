@@ -1,0 +1,3 @@
+#!/bin/sh
+
+tmux new-session -n htop -c code/nbx htop\; new-window -n config -c code/nbx/configuration\; attach

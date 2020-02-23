@@ -16,5 +16,7 @@
 !.npmrc
 !.pass.bash-completion
 !.tmux.conf
-!gcloud_context.py
+!.tmux.setup
 !Makefile
+!fdiff.py
+!gcloud_context.py
