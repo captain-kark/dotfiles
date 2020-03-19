@@ -1,3 +1,11 @@
+shopt -s histappend
+shopt -s cmdhist
+export HISTCONTROL=ignoreboth
+export HISTSIZE=8192
+export HISTFILESIZE=8192
+export HISTIGNORE='ls:bg:fg:history'
+export HISTTIMEFORMAT='%F %T '
+
 source ~/.bash_aliases
 source ~/.git-prompt.sh
 source ~/.git-completion.sh
