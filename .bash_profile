@@ -1,5 +1,4 @@
 shopt -s histappend
-shopt -s cmdhist
 export HISTCONTROL=ignoreboth
 export HISTSIZE=8192
 export HISTFILESIZE=8192
