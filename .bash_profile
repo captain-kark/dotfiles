@@ -22,8 +22,11 @@ export GOROOT_BOOTSTRAP=$(go env GOROOT)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
 
-export LDFLAGS="-L/usr/local/opt/openssl/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl/include"
+_brew_prefix_openssl="/usr/local/opt/openssl@1.1"
+_brew_prefix_readline="/usr/local/opt/readline"
+export LDFLAGS="-L$_brew_prefix_openssl/lib -L$_brew_prefix_readline/lib"
+export CPPFLAGS="-I$_brew_prefix_openssl/include -I$_brew_prefix_readline/include"
+export CFLAGS="-I$_brew_prefix_openssl/include -I$_brew_prefix_readline/include"
 
 export NVM_DIR="$HOME/.nvm"
 [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
