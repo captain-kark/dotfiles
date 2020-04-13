@@ -78,6 +78,7 @@ install-dev:
 		liblzma-dev \
 		libncurses5-dev \
 		libncursesw5-dev \
+		libreadline-dev \
 		libsodium-dev \
 		libsqlite3-dev \
 		libssl-dev \
