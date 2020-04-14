@@ -283,8 +283,7 @@ prompt() {
     inline_status=" "
 
     function _is_git_dir() {
-        $(git branch > /dev/null 2>&1)
-        return $?
+        test -n "$(git branch 2> /dev/null)"
     }
 
     if [ -z $_returncode ]; then
@@ -318,11 +317,11 @@ prompt() {
                 else
                     POST+="$(fdiff)\n"
                 fi
+                FMT=$(__git_ps1 "$FMT")
             fi
 
             export LAST_PROMPT="$(ret_prompt)"
             POST+=$LAST_PROMPT
-            PS1="$PRE$(__git_ps1 $FMT)$POST"
         else
             # quiet prompt
             PRE+=$IBlack$Time24h$Color_Off
@@ -331,20 +330,19 @@ prompt() {
             PRE+=$(venv_prompt)
 
             if _is_git_dir; then
-                $(git status | grep "nothing to commit" > /dev/null 2>&1)
-                if [ $? -eq 0 ]; then
+                if git status | grep "nothing to commit" > /dev/null 2>&1; then
                     FMT+="$Green (%s)$Color_Off"
                 else
                     FMT+="$IRed {%s}$Color_Off"
                 fi
+                FMT=$(__git_ps1 "$FMT")
             fi
 
             POST=" $Yellow$PathShort$Color_Off\n"
             export LAST_PROMPT="$: "
             POST+=$LAST_PROMPT
-
-            PS1="$PRE$(__git_ps1 "$FMT")$POST"
         fi
+        PS1="$PRE$FMT$POST"
     fi
 }
 
