@@ -3,7 +3,8 @@
 import sys
 
 try:
-    config_file_name = ".config/gcloud/configurations/config_{}".format(sys.argv[1])
+    configuration_name = sys.argv[1]
+    config_file_name = ".config/gcloud/configurations/config_{}".format(configuration_name)
 except IndexError:
     # current-context is not set
     sys.exit(1)
@@ -21,9 +22,14 @@ except ImportError:
     config_file = os.path.join(os.path.expanduser("~"), config_file_name)
 
 config = ConfigParser()
+project_name = "?"
 
 try:
     config.read(config_file)
-    print(config.get("core", "project"))
+    if config.has_section("core") and config.has_section("core", "project"):
+        project_name = config.get("core", "project") + "??"
 except:
-    sys.exit(1)
+    project_name = configuration_name
+
+print(project_name)
+sys.exit(0)
