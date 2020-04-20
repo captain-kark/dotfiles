@@ -209,6 +209,9 @@ function gcloudn {
   export _gcloud_prev_context="$(cat ~/.config/gcloud/active_config)"
 
   _suppressed=$(gcloud config configurations activate "$1" 2>&1 > /dev/null)
+  if [ $? -eq 0 ]; then
+      kubn "$1" "$2"
+  fi
   _suppressed=
 }
 
