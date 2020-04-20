@@ -119,7 +119,7 @@ function fdiff {
   fi
   if [ $(echo "$untracked_dirs" | wc -l) -gt 0 ]; then
       for dir in $untracked_dirs; do
-          all_untracked+=$(tar -c "$dir" | wc -l)$'\n'
+          all_untracked+=$(tar -c "$dir" | wc -l | tr -d '[:blank:]')$'\n'
       done
   else
       all_untracked+=$(echo "$untracked_dirs" | awk '{print $1}')$'\n'
