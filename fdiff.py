@@ -29,6 +29,7 @@ pad_counts = max(pad_tracked, pad_untracked)
 diff_stats = split_tracked + [u or '\x1b[33m{}\x1b[m'.format('?' * pad_counts) for u in untracked]
 diff_lines = [' '.join(t.split(' ')[2:]) for t in tracked] + ['\x1b[33m+~\x1b[m' for u in untracked]
 pad_st = []
+
 for i, s in enumerate(st):
     try:
         diff_stat = diff_stats[i]
@@ -39,7 +40,7 @@ for i, s in enumerate(st):
     try:
         diff_line = diff_lines[i]
     except IndexError:
-        diff_line = '\x1b[33m±\x1b[m'
+        diff_line = '\x1b[33m~\x1b[m'
 
     pad_st.append('{:<{}} | {:>{}} {}'.format(s, (st_longest + len(st_parts[i][0])), diff_stat, pad_counts, diff_line))
 print('\n'.join(pad_st))
