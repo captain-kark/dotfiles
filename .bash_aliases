@@ -110,20 +110,19 @@ function fdiff {
   untracked_files=$(echo "$untracked" | grep "[^/]$")
   untracked_dirs=$(echo "$untracked" | grep "/$" | sed "s/\/$//")
   all_untracked=""
-  if [ -n "$untracked_files" ]; then
-      if [ $(echo "$untracked_files" | wc -l) -gt 1 ]; then
-          all_untracked+=$(echo "$untracked_files" | xargs wc -l | sed '$d' | awk '{print $1 }')$'\n'
-      else
-          all_untracked+=$(echo "$untracked_files" | xargs wc -l | awk '{print $1}')$'\n'
+  for file_or_dir in $untracked; do
+      if [ -f $file_or_dir ]; then
+          all_untracked+=$(wc -l "$file_or_dir" | awk '{print $1}')$'\n'
       fi
-  fi
-  if [ $(echo "$untracked_dirs" | wc -l) -gt 0 ]; then
-      for dir in $untracked_dirs; do
-          all_untracked+=$(tar -c "$dir" | wc -l | tr -d '[:blank:]')$'\n'
-      done
-  else
-      all_untracked+=$(echo "$untracked_dirs" | awk '{print $1}')$'\n'
-  fi
+
+      if [ -d $file_or_dir ]; then
+          estimate=$(tar -c "$file_or_dir" | wc -l | tr -d '[:blank:]')
+          if [ "$estimate" = "0" ]; then
+              estimate=$(du -hd 0 "$file_or_dir" | awk '{ print $1"b" }')
+          fi
+          all_untracked+=$estimate$'\n'
+      fi
+  done
 
   all_tracked=""
   tracked=
