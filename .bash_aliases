@@ -118,7 +118,7 @@ function fdiff {
       if [ -d $file_or_dir ]; then
           estimate=$(tar -c "$file_or_dir" | wc -l | tr -d '[:blank:]')
           if [ "$estimate" = "0" ]; then
-              estimate=$(du -hd 0 "$file_or_dir" | awk '{ print $1"b" }')
+              estimate=$(du -hd 0 "$file_or_dir" | awk '{ print $1"i" }')
           fi
           all_untracked+=$estimate$'\n'
       fi
