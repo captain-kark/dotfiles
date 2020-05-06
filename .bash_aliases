@@ -202,6 +202,7 @@ function gcloudn {
 
   if [ "$1" = "-" ]; then
       export _gcloud_prev_context=$_gcloud_current_context
+      kubn -
       return 0
   fi
 
