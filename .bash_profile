@@ -14,6 +14,7 @@ export SHELL="/usr/local/bin/bash"
 source ~/.git-prompt.sh
 source ~/.bash_aliases
 source ~/.git-completion.sh
+source ~/.kubectl.bash-completion
 source /usr/local/etc/bash_completion.d/password-store
 
 # The next line updates PATH for the Google Cloud SDK.
