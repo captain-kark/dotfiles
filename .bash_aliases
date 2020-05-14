@@ -139,11 +139,7 @@ function fdiff {
 
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
-function kublogs {
-  __label_args=${@:1:2}
-  __logs_args=${@:3}
-  kub get po $__label_args -o name | cut -d / -f 2 | xargs -I{} bash -c 'sed -E "s/([0-9]{5})([0-9]+)?Z/\1Z $1/" <(kubectl logs $1 --timestamps ${@:2})' echo {} $__logs_args
-}
+alias kublg=stern
 function kubn {
   # kvaps/kubectl-use/blob/b967f15204b357b71d9792c16d664bb26de57e68/kubectl-use
   _k8s_current_context=$(kub config get-contexts $(kub config current-context) --no-headers)
