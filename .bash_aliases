@@ -140,6 +140,7 @@ function fdiff {
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
 alias kub=kubectl
 alias kublg=stern
+alias kubgrep=~/kubgrep.sh
 function kubn {
   # kvaps/kubectl-use/blob/b967f15204b357b71d9792c16d664bb26de57e68/kubectl-use
   _k8s_current_context=$(kub config get-contexts $(kub config current-context) --no-headers)
