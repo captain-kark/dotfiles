@@ -2,8 +2,6 @@
 !.bash_aliases
 !.bash_profile
 !.bashrc
-!.el4r
-!.el4rrc.rb
 !.emacs_bash
 !.git-completion.sh
 !.git-prompt.sh
@@ -13,9 +11,8 @@
 !.inputrc
 !.irbrc
 !.jscsrc
-!.teamocil/default.yml
+!.kubectl.bash-completion
 !.tmux.conf
-!.tmux.setup
 !Brewfile
 !fdiff.py
 !gcloud_context.py
