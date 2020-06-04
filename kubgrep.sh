@@ -22,6 +22,7 @@ for arg in "${@:2}"; do
     case "$arg" in
         -q|--query)
             __query=()
+            continue
         ;;
         -i|--include)
             __include=()
