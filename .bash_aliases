@@ -239,15 +239,14 @@ rulem ()  {
 }
 
 function e {
-  if [ -z "$1" ]
-  then
-    TMP="$(mktemp /tmp/stdin-XXX)"
-    cat >$TMP
-    emacs -n $TMP
-    rm $TMP
-  else
-    emacs -n "$@"
+  if [[ "$1" = --* ]]; then
+      FILETYPE=".${1#--}"
   fi
+
+  TMP="$(mktemp /tmp/stdin-XXX)$FILETYPE"
+  cat >$TMP
+  emacs -n $TMP
+  rm $TMP
 }
 
 kub_prompt() {
