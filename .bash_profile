@@ -45,6 +45,7 @@ function setup() {
     PATH=$PATH:$HOME/.rvm/bin:$HOME/.android/tools:$HOME/Library/Android/sdk/platform-tools:$HOME/code/tf
 
     export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+    export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 }
 
 setup &
