@@ -7,6 +7,16 @@ function scolor() {
     echo "$1" | sed "s/\\\\\\[//g; s/\\\\\\]//g"
 }
 
+function contains() {
+    for e in "${@:2}"; do
+        echo "checking: $e = $1"
+        if [ "$e" = "$1" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 # Reset
 Color_Off="\[\033[0m\]"       # Text Reset
 
@@ -107,15 +117,18 @@ function fdiff {
   st=$(echo "$st_full" | sed '1d')
   [ -z "$st" ] && return 0
   untracked=$(echo "$st" | grep "??" | cut -d ' ' -f 2)
+  ignored=$(git status -sb --ignored | grep "\!\!" | cut -d ' ' -f 2)
   untracked_files=$(echo "$untracked" | grep "[^/]$")
+  ignored_files=$(echo "$ignored" | grep "[^/]$")
   untracked_dirs=$(echo "$untracked" | grep "/$" | sed "s/\/$//")
+  ignored_dirs=$(echo "$ignored" | grep "/$" | sed "s/\/$//")
   all_untracked=""
   for file_or_dir in $untracked; do
-      if [ -f $file_or_dir ]; then
+      if [ -f $file_or_dir ] && [ $(contains "$file_or_dir" $ignored_files) ]; then
           all_untracked+=$(wc -l "$file_or_dir" | awk '{print $1}')$'\n'
       fi
 
-      if [ -d $file_or_dir ]; then
+      if [ -d $file_or_dir ] && [ $(contains "$file_or_dir" $ignored_dirs) ]; then
           estimate=$(tar -c "$file_or_dir" | wc -l | tr -d '[:blank:]')
           if [ "$estimate" = "0" ]; then
               estimate=$(du -hd 0 "$file_or_dir" | awk '{ print $1"i" }')
