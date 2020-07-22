@@ -9,7 +9,6 @@ function scolor() {
 
 function contains() {
     for e in "${@:2}"; do
-        echo "checking: $e = $1"
         if [ "$e" = "$1" ]; then
             return 0
         fi
