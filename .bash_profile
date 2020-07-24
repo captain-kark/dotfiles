@@ -28,26 +28,23 @@ export NVM_DIR="$HOME/.nvm"
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
+export GOVERSION="1.13"
+export PATH="$PATH:$HOME/code/goroots/go$GOVERSION/bin:$HOME/code/go/bin"
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+eval "$(pyenv init -)"
+
 function setup() {
-    export GOVERSION="1.13"
-    export PATH="$PATH:$HOME/code/goroots/go$GOVERSION/bin:$HOME/code/go/bin"
     export GOROOT_BOOTSTRAP=$(go env GOROOT)
-
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/shims:$PATH"
-
     _brew_prefix_openssl="/usr/local/opt/openssl@1.1"
     _brew_prefix_readline="/usr/local/opt/readline"
     export LDFLAGS="-L$_brew_prefix_openssl/lib -L$_brew_prefix_readline/lib"
     export CPPFLAGS="-I$_brew_prefix_openssl/include -I$_brew_prefix_readline/include"
     export CFLAGS="-I$_brew_prefix_openssl/include -I$_brew_prefix_readline/include"
-
-    PATH=$PATH:$HOME/.rvm/bin:$HOME/.android/tools:$HOME/Library/Android/sdk/platform-tools:$HOME/code/tf
-
-    export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-    export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 }
-
-setup &
-
-eval "$(pyenv init -)"
