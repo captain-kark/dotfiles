@@ -123,11 +123,11 @@ function fdiff {
   ignored_dirs=$(echo "$ignored" | grep "/$" | sed "s/\/$//")
   all_untracked=""
   for file_or_dir in $untracked; do
-      if [ -f $file_or_dir ] && [ $(contains "$file_or_dir" $ignored_files) ]; then
+      if [ -f $file_or_dir ] && [ ! $(contains "$file_or_dir" $ignored_files) ]; then
           all_untracked+=$(wc -l "$file_or_dir" | awk '{print $1}')$'\n'
       fi
 
-      if [ -d $file_or_dir ] && [ $(contains "$file_or_dir" $ignored_dirs) ]; then
+      if [ -d $file_or_dir ] && [ ! $(contains "$file_or_dir" $ignored_dirs) ]; then
           estimate=$(tar -c "$file_or_dir" | wc -l | tr -d '[:blank:]')
           if [ "$estimate" = "0" ]; then
               estimate=$(du -hd 0 "$file_or_dir" | awk '{ print $1"i" }')
