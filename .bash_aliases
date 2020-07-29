@@ -146,7 +146,7 @@ function fdiff {
       all_tracked=$(echo "$all_tracked" | sed '$d')
   fi
 
-  python ~/fdiff.py "$st" "$all_tracked" "$all_untracked"
+  PYENV_VERSION=system python ~/fdiff.py "$st" "$all_tracked" "$all_untracked"
 }
 
 function killport { kill $(lsof -i :$@ | tail -n 1 | cut -f 5 -d ' '); }
