@@ -1,7 +1,7 @@
 shopt -s histappend
 export HISTCONTROL=ignoreboth
-export HISTSIZE=8192
-export HISTFILESIZE=8192
+export HISTSIZE=16348
+export HISTFILESIZE=16348
 export HISTIGNORE='ls:bg:fg:history:pbc'
 export HISTTIMEFORMAT='%F %T '
 
@@ -13,15 +13,16 @@ export SHELL="/usr/local/bin/bash"
 
 source ~/.git-prompt.sh
 source ~/.bash_aliases
-source ~/.git-completion.sh
-source ~/.kubectl.bash-completion
-source /usr/local/etc/bash_completion.d/password-store
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/kark/code/google-cloud-sdk/path.bash.inc' ]; then . '/Users/kark/code/google-cloud-sdk/path.bash.inc'; fi
 
-# The next line enables shell command completion for gcloud.
+if [ -f "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]; then . "$(brew --prefix)/etc/profile.d/bash_completion.sh"; fi
 if [ -f '/Users/kark/code/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/kark/code/google-cloud-sdk/completion.bash.inc'; fi
+
+source <(kub completion bash)
+source /usr/local/etc/bash_completion.d/password-store
+source ~/.git-completion.sh
 
 export NVM_DIR="$HOME/.nvm"
 [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
