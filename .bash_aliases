@@ -261,25 +261,35 @@ function e {
   rm $TMP
 }
 
+highlight_context() {
+    CONTEXT="$1";
+    if [[ "$CONTEXT" =~ "admin" ]]; then
+        if [[ "$CONTEXT" =~ "prod" ]]; then
+            printf "$IRed";
+        else
+            printf "$Yellow";
+        fi
+    else
+        if [[ "$CONTEXT" =~ "prod" ]]; then
+            printf "$Red";
+        else
+            printf "$Cyan";
+        fi
+    fi
+    echo "$CONTEXT$Color_Off";
+}
+
 kub_prompt() {
     if command -v kubectl &>/dev/null; then
         CONTEXT=`kub-context`;
-        if [[ "$CONTEXT" =~ "prod" ]]; then
-            echo " ${IRed}k8s:$CONTEXT$Color_Off";
-        else
-            echo " ${Yellow}k8s:$CONTEXT$Color_Off";
-        fi
+        highlight_context " k8s:$CONTEXT";
     fi
 }
 
 gcp_prompt() {
     if command -v gcloud &>/dev/null; then
         CONTEXT=`gcp-context`;
-        if [[ "$CONTEXT" =~ "prod" ]]; then
-            echo " ${IRed}gcp:$CONTEXT$Color_Off";
-        else
-            echo " ${Cyan}gcp:$CONTEXT$Color_Off";
-        fi
+        highlight_context " gcp:$CONTEXT$Color_Off";
     fi
 }
 
