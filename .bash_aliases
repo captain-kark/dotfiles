@@ -330,7 +330,7 @@ prompt() {
     fi
 
     if [ -z $_returncode ]; then
-        PS1=$LAST_PROMPT
+        PS1="$LAST_PROMPT"
     else
         if [ -d $(pwd) ]; then
             _path="$PathShort$Color_Off\n"
@@ -382,19 +382,19 @@ prompt() {
                 POST+="\n"
 
                 if [ -n "$_git_nothing_to_commit" ] && [ -z "$_git_status_info_initial_commit" ]; then
-                    POST+="$(git lg 1 --color)\n$ColorOff"
+                    POST+='$(git lg 1 --color)\n'$ColorOff
                     POST+="$(printf "%$(echo "$_git_status_info_shortsha" | wc -c)s" " ")-$(git diff --shortstat HEAD~1 HEAD)\n"
                 else
                     POST+="$(fdiff)\n"
                 fi
-                FMT=$(__git_ps1 "$FMT")
+                FMT="$(__git_ps1 "$FMT")"
             fi
         else
             # quiet prompt
-            PRE+=$IBlack$Time24h$Color_Off
-            PRE+=$(gcp_prompt)
-            PRE+=$(kub_prompt)
-            PRE+=$(venv_prompt)
+            PRE+="$IBlack$Time24h$Color_Off"
+            PRE+="$(gcp_prompt)"
+            PRE+="$(kub_prompt)"
+            PRE+="$(venv_prompt)"
 
             if [ -n "$_git_dir_info_is_repository" ]; then
                 if git status | grep "nothing to commit" > /dev/null 2>&1; then
@@ -402,12 +402,12 @@ prompt() {
                 else
                     FMT+="$Red {%s}$Color_Off"
                 fi
-                FMT=$(__git_ps1 "$FMT")
+                FMT="$(__git_ps1 "$FMT")"
             fi
             POST=" $Yellow$_path"
         fi
         export LAST_PROMPT="$(ret_prompt)"
-        POST+=$LAST_PROMPT
+        POST+="$LAST_PROMPT"
         PS1="$PRE$FMT$POST"
     fi
 }
@@ -420,12 +420,12 @@ trapDbg() {
     history -a
     if [ "$c" != "pc" ] && [ "$c" != "_pyenv_virtualenv_hook" ]; then
         export _cmd="$c"
-        export _cmdtime=$(perl -MTime::HiRes=time -e 'printf "%s", time' &)
+        export _cmdtime="$(perl -MTime::HiRes=time -e 'printf "%s", time' &)"
     fi
 }
 
 pc() {
-    local r=$?
+    local r="$?"
     trap "" DEBUG
     if [ -n "$_cmd" ]; then
         export _returncode="$r"
@@ -433,9 +433,9 @@ pc() {
         export _returncode=""
     fi
 
-    export _returncode_color=$Red
+    export _returncode_color="$Red"
     if [ "$_returncode" = "0" ]; then
-        export _returncode_color=$Green
+        export _returncode_color="$Green"
     fi
     export _cmd=
     prompt
