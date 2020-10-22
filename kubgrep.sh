@@ -13,7 +13,7 @@ sortlogs () {
 
 __query=("worker|api")
 __include=("-i" "$__term")
-__exclude=("-e" "- DEBUG -")
+__exclude=("-e" "- DEBUG -|aiohttp.access")
 __since=("-s" "2h")
 __template=("--template" "{{.Namespace}}{{.Message}}")
 
