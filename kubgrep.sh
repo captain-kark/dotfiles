@@ -44,4 +44,4 @@ function __ts_sort() {
     sed -E 's/^(.+)?([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{5})([0-9]+)?Z/\2Z \1/' <&0
 }
 
-stern "${__args[@]}" "${__query[@]}" "${__include[@]}" "${__exclude[@]}" "${__since[@]}" "${__template[@]}" -t | tee >(__ts_sort > "$__logs") | __ts_sort
+stern "${__args[@]}" "${__query[@]}" "${__include[@]}" "${__exclude[@]}" "${__since[@]}" "${__template[@]}" -t -o raw | tee >(__ts_sort > "$__logs") | __ts_sort
