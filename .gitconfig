@@ -36,19 +36,19 @@
         fp = format-patch
         history = !git l --all -s -- # filename
         l = log --pretty=tformat:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-        lg = !git l -n # number of commits
+        lg = "!f() { git l -n \"${1:-1}\"; }; f"
         lgg = !git l -n 5
         lggg = !git l -n 15
         origin = push origin -q
         purr = pull --rebase
-        recap = !git diff --stat ${1-HEAD}~1 ${1-HEAD}
-        reverse = "!git show ${1-HEAD^}..${2-HEAD} | git apply --reverse --3way; git reset ."
+        recap = "!f() { git diff --stat ${1-HEAD}~1 ${1-HEAD}; }; f"
+        reverse = "!f() { git show ${1-HEAD^}..${2-HEAD} | git apply --reverse --3way; git reset .; }; f"
         rip = commit --amend --no-edit
         sbt = subtree push --prefix # app|dist origin gh-pages
         so = !git am -3 --signoff < # diff.patch
         sor = am --resolved
         split = reset HEAD^
-        sq = !"git reset --soft ${1}; git add -A; git commit;"
+        sq = "!f() { git reset --soft ${1}; git add -A; git commit; }; f"
         st = !"if [ -z $PS1_NO_VERBOSE ]; then cd .; else git status -sb; fi"
         sto = !git st
         standup = !git lg --since yesterday --author `git config user.email`
