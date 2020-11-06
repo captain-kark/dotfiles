@@ -251,14 +251,18 @@ rulem ()  {
 }
 
 function e {
-  if [[ "$1" = --* ]]; then
-      FILETYPE=".${1#--}"
+  if [ -f "$1" ]; then
+      TMP="$1"
+  else
+      if [[ "$1" = --* ]]; then
+          FILETYPE=".${1#--}"
+      fi
+
+      TMP="$(mktemp /tmp/stdin-XXX)$FILETYPE"
+      cat >$TMP
   fi
 
-  TMP="$(mktemp /tmp/stdin-XXX)$FILETYPE"
-  cat >$TMP
-  emacs -n $TMP
-  rm $TMP
+  emacs -n "$TMP"
 }
 
 highlight_context() {
