@@ -54,8 +54,13 @@
         standup = !git lg --since yesterday --author `git config user.email`
         update = "!git fetch --all --prune; git branch --no-contains HEAD --no-color --merged | xargs -n 1 git branch -d"
         upstream = push upstream -q
+        use-head   = "checkout --ours" # files
         use-master = "checkout --ours" # files
+        use-old    = "checkout --ours" # files
         use-branch = "checkout --theirs" # files
+        use-commit = "checkout --theirs" # files
+        use-new    = "checkout --theirs" # files
+        use-pick   = "checkout --theirs" # files
 [pager]
         st = true
         df = true
