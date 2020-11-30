@@ -229,7 +229,6 @@ function gcloudn {
   _suppressed=
 }
 
-alias tf=terraform
 alias ll='ls -lAh'
 alias ln='ln -is'
 alias ls='ls -lh'
@@ -240,6 +239,10 @@ alias noisy='unset PS1_NO_VERBOSE'
 alias quiet='export PS1_NO_VERBOSE=1'
 alias pbc='fc -ln -1 | awk '\''{$1=$1}1'\'' ORS='\'''\'' | pbcopy'
 alias sudo='sudo '
+alias tf=terraform
+alias _tree=tree
+alias tree="_tree -I '.venv|node_modules'"
+alias treed='tree -d -L '
 # https://brettterpstra.com/2015/02/20/shell-trick-printf-rules/
 rulem ()  {
   if [ $# -eq 0 ]; then
