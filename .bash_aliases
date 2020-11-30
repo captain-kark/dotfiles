@@ -128,7 +128,7 @@ function fdiff {
       fi
 
       if [ -d $file_or_dir ] && [ ! $(contains "$file_or_dir" $ignored_dirs) ]; then
-          estimate=$(tar -c "$file_or_dir" | wc -l | tr -d '[:blank:]')
+          estimate=$(tar -c "$file_or_dir" 2>/dev/null | wc -l | tr -d '[:blank:]')
           if [ "$estimate" = "0" ]; then
               estimate=$(du -hd 0 "$file_or_dir" | awk '{ print $1"i" }')
           fi
