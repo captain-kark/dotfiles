@@ -11,7 +11,6 @@ sortlogs () {
     $EDITOR --no-wait "$__logs"
 }
 
-__query=("worker|api")
 __include=("-i" "$__term")
 __exclude=("-e" "- DEBUG -|aiohttp.access")
 __since=("-s" "2h")
@@ -20,10 +19,6 @@ __template=("--template" "{{.Namespace}}{{.Message}}")
 args=()
 for arg in "${@:2}"; do
     case "$arg" in
-        -q|--query)
-            __query=()
-            continue
-        ;;
         -i|--include)
             __include=()
         ;;
@@ -44,4 +39,4 @@ function __ts_sort() {
     sed -E 's/^(.+)?([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{5})([0-9]+)?Z/\2Z \1/' <&0
 }
 
-stern "${__args[@]}" "${__query[@]}" "${__include[@]}" "${__exclude[@]}" "${__since[@]}" "${__template[@]}" -t -o raw | tee >(__ts_sort > "$__logs") | __ts_sort
+stern "$__term" "${__args[@]}" "${__include[@]}" "${__exclude[@]}" "${__since[@]}" "${__template[@]}" -t -o raw | tee >(__ts_sort > "$__logs") | __ts_sort
