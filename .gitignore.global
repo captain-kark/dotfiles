@@ -9,3 +9,5 @@
 *flycheck_*\.py
 
 .env
+.venv
+.python-version
